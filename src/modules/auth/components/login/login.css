@@ -1,0 +1,9 @@
+.login-btn-container{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.login-title {
+    text-align: center;
+}

@@ -1,0 +1,43 @@
+#root .trigger {
+    padding: 0 24px;
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+  
+#root .trigger:hover {
+    color: #1890ff;
+}
+  
+#root .logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.applayout-content{
+    background: #fff;
+    margin: 24px 16px;
+    padding: 24px;
+}
+
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+#root .ant-layout-header {
+    display: flex;
+}
+
+.applayout-header-items-container {
+    width: calc(100% - 66px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 24px;
+}
+
+.applayout-user-options-divider {
+    margin: 6px 0 2px 0 !important;
+}
