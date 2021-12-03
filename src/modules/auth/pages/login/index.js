@@ -1,36 +1,33 @@
 import { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Form, Input, Button, Checkbox, Divider, Typography } from "antd";
+import { Form, Input, Button, Divider, Typography } from "antd";
 
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { loginService } from '../../../common/services/auth/auth.slice'
+
 
 import "./login.css";
 
 export default function Login(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
-  const from = location.state?.from?.pathname || "/";
-
-  const onAuthSuccess = useCallback(() => {
-    // Send them back to the page they tried to visit when they were
-    // redirected to the login page. Use { replace: true } so we don't create
-    // another entry in the history stack for the login page.  This means that
-    // when they get to the protected page and click the back button, they
-    // won't end up back on the login page, which is also really nice for the
-    // user experience.
-    navigate(from, { replace: true });
-  }, [from, navigate]);
-
+  const from = location.state?.from?.pathname || "/portal/";
+  
   const onFinish = useCallback((values) => {
-    console.log("Success:", values);
-  }, []);
+    dispatch(loginService(values))
+    .unwrap()
+    .then((originalPromiseResult) => {
+      const { user } = originalPromiseResult;
+      if (user) {
+        navigate(from, { replace: true });;
+      }
+    })
+    .catch((rejectedValueOrSerializedError) => {
+      // handle error here
+    })
+  }, [dispatch, from, navigate]);
 
   const onFinishFailed = useCallback((errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -50,7 +47,7 @@ export default function Login(props) {
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
-            autoComplete="off"
+            autoComplete
         >
             <Typography.Title level={3} className="login-title">Welcome to AIB Admin Portal</Typography.Title>
             <Divider />

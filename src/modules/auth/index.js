@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AuthLayout from './components/auth-layout';
-import LoginPage from './components/login';
+import LoginPage from './pages/login';
 
 const App = () => {
 

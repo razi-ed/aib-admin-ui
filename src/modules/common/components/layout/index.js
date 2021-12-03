@@ -39,7 +39,7 @@ export default function AppLayout(props) {
         <div className="logo" />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
           <Menu.Item key="nav-user-mgmt" icon={<UserOutlined />}>
-            Users
+            <Link to="/portal/users">Users</Link>
           </Menu.Item>
           <Menu.Item key="nav-author" icon={<FormOutlined />}>
             Authors

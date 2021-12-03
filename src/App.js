@@ -1,29 +1,36 @@
-import React from 'react';
-// import { useSelector } from 'react-redux';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 import Layout from './modules/common/components/layout';
-import LoginPage from './modules/auth/components/login';
+import AuthLayer from './modules/auth';
+import Users from './modules/users/pages/users';
 
 import './App.css';
 
 const App = () => {
+  const navigate = useNavigate();
   const location = useLocation();
+  const currentUser = useSelector(store => store.auth.user);
 
-  if (false) {
-  // if (!auth.user) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
-    return <Navigate to="/login" state={{ from: location }} />;
+  if (!currentUser.id && location.pathname.includes('portal')) {
+    return <Navigate to="/auth/login" state={{ from: location }} />;
   }
+  // useEffect(() => {
+  //   if (!currentUser.id && location.pathname.includes('/portal')) {
+  //     navigate("/auth/login", { replace: true, state:{ from: location } });
+  //   }
+  // }, [currentUser.id, navigate, location])
 
   return (
     <Routes>
       <Route path="/portal" element={<Layout />} >
         <Route index element={<p>home</p>} />
         <Route path="categories" element={<p>categories</p>} />
+        
+        <Route path="users" element={<Users />} />
+        <Route path="users/" element={<Users />} />
+        <Route path="users/:userId" element={<Users />} />
         {/*
           Using path="*"" means "match anything", so this route
           acts like a catch-all for URLs that we don't have explicit

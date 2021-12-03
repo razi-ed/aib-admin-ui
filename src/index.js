@@ -13,8 +13,8 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Provider store={store}>
-        <AuthLayer />
         <App />
+        <AuthLayer />
       </Provider>
     </Router>
   </React.StrictMode>,
