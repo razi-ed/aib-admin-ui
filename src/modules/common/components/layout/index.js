@@ -1,6 +1,8 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Layout, Menu, Dropdown, Divider } from 'antd';
+import { capitalize } from 'lodash';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -9,6 +11,8 @@ import {
   TagOutlined,
   IdcardOutlined,
 } from '@ant-design/icons';
+
+import { moduleName as categoryModuleName } from '../../../categories/constants';
 
 import './layout.css';
 
@@ -28,6 +32,8 @@ const HeaderUserOptionsMenu = (
 
 export default function AppLayout(props) {
   const [collapsed, setCollapsed] = React.useState(false);
+  const { pathname } = useLocation();
+  const userName = useSelector((store) => store.auth?.user?.name || 'Welcome!');
 
   const toggle = React.useCallback(() => {
     setCollapsed(!collapsed);
@@ -37,18 +43,18 @@ export default function AppLayout(props) {
     <Layout className="cover-parent">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-          <Menu.Item key="nav-user-mgmt" icon={<UserOutlined />}>
+        <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[2] || '']}>
+          <Menu.Item key="Users" icon={<UserOutlined />} a>
             <Link to="/portal/users">Users</Link>
           </Menu.Item>
-          <Menu.Item key="nav-author" icon={<FormOutlined />}>
+          <Menu.Item key="Authors" icon={<FormOutlined />}>
             Authors
           </Menu.Item>
-          <Menu.Item key="nav-coach" icon={<IdcardOutlined />}>
+          <Menu.Item key="Coaches" icon={<IdcardOutlined />}>
             Coaches
           </Menu.Item>
-          <Menu.Item key="nav-category" icon={<TagOutlined />}>
-            Categories
+          <Menu.Item key={categoryModuleName} icon={<TagOutlined />}>
+            <Link to={`/portal/${categoryModuleName}`}>{`${capitalize(categoryModuleName)}`}</Link>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -61,7 +67,7 @@ export default function AppLayout(props) {
           }
           <div className="applayout-header-items-container">
             <Dropdown.Button overlay={HeaderUserOptionsMenu} placement="bottomRight" icon={<UserOutlined />} >
-              Username
+              {userName}
             </Dropdown.Button>
           </div>
         </Header>
