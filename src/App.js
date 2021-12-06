@@ -5,6 +5,7 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-
 import Layout from './modules/common/components/layout';
 import Users from './modules/users/pages/users';
 import Categories, {moduleName as CategoryModuleName} from './modules/categories/pages/index.jsx';
+import Authors, {moduleName as AuthorsModuleName} from './modules/authors/pages/index.jsx';
 
 import './App.css';
 
@@ -29,6 +30,9 @@ const App = () => {
 
         <Route path={`${CategoryModuleName}`} element={<Categories />} />
         <Route path={`${CategoryModuleName}/:keyId`} element={<Categories />} />
+        
+        <Route path={`${AuthorsModuleName}`} element={<Authors />} />
+        <Route path={`${AuthorsModuleName}/:keyId`} element={<Authors />} />
         
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />

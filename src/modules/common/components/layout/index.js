@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 
 import { moduleName as categoryModuleName } from '../../../categories/constants';
+import { moduleName as authorsModuleName } from '../../../authors/constants';
 
 import './layout.css';
 
@@ -47,8 +48,8 @@ export default function AppLayout(props) {
           <Menu.Item key="Users" icon={<UserOutlined />} a>
             <Link to="/portal/users">Users</Link>
           </Menu.Item>
-          <Menu.Item key="Authors" icon={<FormOutlined />}>
-            Authors
+          <Menu.Item key={authorsModuleName} icon={<FormOutlined />}>
+            <Link to={`/portal/${authorsModuleName}`}>{`${capitalize(authorsModuleName)}`}</Link>
           </Menu.Item>
           <Menu.Item key="Coaches" icon={<IdcardOutlined />}>
             Coaches
