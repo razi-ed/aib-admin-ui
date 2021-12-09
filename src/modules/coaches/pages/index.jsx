@@ -60,8 +60,8 @@ export default function UsersPage(params) {
     )
 
     const onSubmit = useCallback(
-        ({name, designation}) => {
-            dispatch(upsertService({name, designation, id: keyId}))
+        ({name, description}) => {
+            dispatch(upsertService({name, description, id: keyId}))
             .unwrap()
             .then((result) => {
                 const { hasErrored = false } = result;
@@ -142,11 +142,11 @@ const columns = useMemo(() => ([
         ellipsis: true,
     },
     {
-        title: 'Designation',
-        dataIndex: 'designation',
-        key: 'designation',
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
         sorter: {
-            compare: (a, b) => a.designation - b.designation,
+            compare: (a, b) => a.description - b.description,
         },
         ellipsis: true,
     },

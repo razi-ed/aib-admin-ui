@@ -14,6 +14,7 @@ import {
 
 import { moduleName as categoryModuleName } from '../../../categories/constants';
 import { moduleName as authorsModuleName } from '../../../authors/constants';
+import { moduleName as coachesModuleName } from '../../../coaches/constants';
 
 import './layout.css';
 
@@ -51,8 +52,8 @@ export default function AppLayout(props) {
           <Menu.Item key={authorsModuleName} icon={<FormOutlined />}>
             <Link to={`/portal/${authorsModuleName}`}>{`${capitalize(authorsModuleName)}`}</Link>
           </Menu.Item>
-          <Menu.Item key="Coaches" icon={<IdcardOutlined />}>
-            Coaches
+          <Menu.Item key={coachesModuleName} icon={<IdcardOutlined />}>
+            <Link to={`/portal/${coachesModuleName}`}>{`${capitalize(coachesModuleName)}`}</Link>
           </Menu.Item>
           <Menu.Item key={categoryModuleName} icon={<TagOutlined />}>
             <Link to={`/portal/${categoryModuleName}`}>{`${capitalize(categoryModuleName)}`}</Link>
