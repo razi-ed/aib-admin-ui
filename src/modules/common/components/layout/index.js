@@ -10,11 +10,13 @@ import {
   FormOutlined,
   TagOutlined,
   IdcardOutlined,
+  GroupOutlined,
 } from '@ant-design/icons';
 
 import { moduleName as categoryModuleName } from '../../../categories/constants';
 import { moduleName as authorsModuleName } from '../../../authors/constants';
 import { moduleName as coachesModuleName } from '../../../coaches/constants';
+import { moduleName as coursesModuleName } from '../../../courses/constants';
 
 import './layout.css';
 
@@ -46,6 +48,18 @@ export default function AppLayout(props) {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[2] || '']}>
+          <Menu.SubMenu key={coursesModuleName} icon={<GroupOutlined />} title={`${capitalize(coursesModuleName)}`}>
+            <Menu.Item key={`${coursesModuleName}/create`}>
+              <Link to={`/portal/${authorsModuleName}/create`}>
+                {`Create ${capitalize(coursesModuleName)}`}
+              </Link>
+            </Menu.Item>
+            <Menu.Item key={`${coursesModuleName}/list`}>
+              <Link to={`/portal/${authorsModuleName}/list`}>
+                {`All ${capitalize(coursesModuleName)}s`}
+              </Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key="Users" icon={<UserOutlined />} a>
             <Link to="/portal/users">Users</Link>
           </Menu.Item>

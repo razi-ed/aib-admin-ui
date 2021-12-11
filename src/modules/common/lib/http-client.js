@@ -17,10 +17,6 @@ function addAuthHeaderToRequest(config) {
     const deserializedAccessToken = window.atob(serializedAccessToken);
     const accessToken = deserializedAccessToken ? JSON.parse(deserializedAccessToken) : {};
 
-    console.log({
-        accessToken
-    });
-
     if (!accessToken.token) {
       return {
         ...config,
@@ -45,7 +41,7 @@ const errorHandler = error => {
     if (error.response.status === 403) {
         window.localStorage.removeItem(authTokensStoragKeys.ACCESS)
         window.localStorage.removeItem(authTokensStoragKeys.REFRESH)
-        window.location = '/auth/login';
+        window.location.href = '/auth/login';
     }
     if (error.response.status === 401) {
         const originalRequest = error.config;
@@ -56,7 +52,7 @@ const errorHandler = error => {
             const now = Date.now();
             if (refreshToken && refreshToken.token && refreshToken.expires && now < new Date(refreshToken.expires)) {
                 originalRequest._retry = true;
-                return Axios.post(`${process.env.REACT_APP_API}/auth/refresh-tokens`, { refreshToken })
+                return Axios.post(`${process.env.REACT_APP_API}/auth/refresh-tokens`, { refreshToken: refreshToken.token })
                 .then(({data}) => {
                     const serializedAccessToken = window.btoa(JSON.stringify(data.access));
                     const serializedRefreshToken = window.btoa(JSON.stringify(data.refresh));
@@ -69,7 +65,7 @@ const errorHandler = error => {
         }
         window.localStorage.removeItem(authTokensStoragKeys.ACCESS)
         window.localStorage.removeItem(authTokensStoragKeys.REFRESH)
-        window.location = '/auth/login';
+        window.location.href = '/auth/login';
     }
     return Promise.reject(error);
 };
@@ -80,7 +76,7 @@ httpClient.interceptors.request.use(
     undefined
 );
 
-httpClient.interceptors.request.use(
+httpClient.interceptors.response.use(
     undefined,
     errorHandler,
 );
