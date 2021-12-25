@@ -2,17 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, Input, Button, Select, Typography, Divider, Table, Space, Popconfirm, notification, Row, Col, InputNumber, Radio, DatePicker, Tabs } from "antd";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { find, capitalize } from "lodash";
 
-
-import "./page.css";
 import LoadingSpinner from "../../common/components/loading-spinner";
-import { actionStatuses } from "../../common/constants/action-status.constants";
+
 import { getListService, upsertService, deleteService, moduleName } from "../services/slice";
-import { getUsersService } from "../../users/services/user.slice";
+import { getListService as getAuthor } from "../../authors/services/slice";
 import { getListService as getCategoriesService } from "../../categories/services/slice";
 
+import { actionStatuses } from "../../common/constants/action-status.constants";
 
+import "./page.css";
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -23,18 +22,14 @@ const validateMessages = {
     number: {
       range: '${label} must be between ${min} and ${max}',
     },
-  };
-  /* eslint-enable no-template-curly-in-string */
+};
+/* eslint-enable no-template-curly-in-string */
 
-export function UpsertCoursePage(params) {
+export function UpsertCourseBasicDetailsPage() {
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id = "" } = useParams();
-    const [panes, setPanes] = useState(initialPanes);
-    const [activeModuleTabKey, setActiveModuleTabKey] = useState(initialPanes);
-
-    let newModuleTabIndex = 0;
+    const { courseId = "" } = useParams();
 
     const userList = useSelector(state => state.user.list)
     const categories = useSelector(state => state.category.list)
@@ -80,17 +75,11 @@ export function UpsertCoursePage(params) {
             //     })
             // })
         },
-        [id],
+        [courseId],
     )
 
-    const onModuleTabChange = (activeKey) => {
-        setActiveModuleTabKey(activeKey);
-    }
-    
-    const onModuleTabEdit = () => {}
-
     return(
-        <div className="course-upsert-container">
+        <div className="course-upsert-container" id="course-upsert-basic">
             <Form
                 layout="vertical"
                 name="nest-messages"
@@ -105,13 +94,13 @@ export function UpsertCoursePage(params) {
                             <Input />
                         </Form.Item>
                         <Form.Item name={'description'} label="Short Description" rules={[{ required: true }]}>
-                            <Input.TextArea />
+                            <Input.TextArea rows={5}/>
                         </Form.Item>
-                        <Form.Item name={'author'} label="name" rules={[{ required: true }]} >
+                        <Form.Item name={'author'} label="Author" rules={[{ required: true }]} >
                             <Select>
                                 { userList.length > 0 ? (
-                                    userList.map(({name}) => (
-                                        <Select.Option key={name} value={name}>{name}</Select.Option>
+                                    userList.map(({name,id}) => (
+                                        <Select.Option key={id} value={name}>{name}</Select.Option>
                                     ))
                                 ) : null}
                             </Select>
@@ -161,91 +150,6 @@ export function UpsertCoursePage(params) {
                     </div>
                 </Form.Item>
             </Form>
-            <Divider />
-            <Form
-                layout="vertical"
-                name="nest-messages"
-                onFinish={onSubmit}
-                validateMessages={validateMessages}
-                validateTrigger="onSubmit"
-            >
-                <Row gutter={16} style={{margin: 0}}>
-                    <Col span={8}>
-                    {/**initialValue={defaultValues.description} */}
-                        <Form.Item name={'totalBatches'} label="Total Batches" rules={[{ type: 'number', min: 1, max: 999, required: true }]} >
-                            <InputNumber />
-                        </Form.Item>
-                        <Form.Item
-                            name={["batchDates", '0']}
-                            label="DatePicker"
-                            rules={[
-                            {
-                            type: 'object',
-                            required: true,
-                            message: 'Please select time!',
-                            },
-                        ]}>
-                            <DatePicker />
-                        </Form.Item>
-                        <Form.Item name={'domain'} label="Main Domain" rules={[{ required: true }]} >
-                            <Select>
-                                { categories.length > 0 ? (
-                                    categories.map(({key, label}) => (
-                                        <Select.Option key={key} value={key}>{label}</Select.Option>
-                                    ))
-                                ) : null}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item name={'filters'} label="Advanced Filters">
-                            <Select mode="tags" />
-                        </Form.Item>
-                        <Form.Item name={'concepts'} label="You'll Learn/Concepts Covered">
-                            <Select mode="tags" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <div>
-                            image
-                        </div>
-                    </Col>
-                </Row>
-                <Form.Item>
-                    <div className="user-manage-form-action-container">
-                        <Button type="primary" htmlType="submit" disabled={loading}>
-                            Save
-                        </Button>
-                    </div>
-                </Form.Item>
-            </Form>
-            <Divider />
-            <div>
-                <Tabs
-                    type="editable-card"
-                    onChange={onModuleTabChange}
-                    activeKey={activeModuleTabKey}
-                    onEdit={onModuleTabEdit}
-                    tabPosition={"left"}
-                >
-                    {panes.map(pane => (
-                    <Tabs.TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-                        <div className="course-section-container">
-                            {pane.key}
-                        </div>
-                    </Tabs.TabPane>
-                    ))}
-                </Tabs>
-            </div>
         </div>
     )
 }
-
-
-const initialPanes = [
-    {
-      title: 'Module 1',
-      key: '1',
-      closable: false,
-    },
-    { title: 'Module 2', key: '2' },
-    { title: 'Module 3', key: '3' },
-  ];

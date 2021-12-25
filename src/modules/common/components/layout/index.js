@@ -50,12 +50,12 @@ export default function AppLayout(props) {
         <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[2] || '']}>
           <Menu.SubMenu key={coursesModuleName} icon={<GroupOutlined />} title={`${capitalize(coursesModuleName)}`}>
             <Menu.Item key={`${coursesModuleName}/create`}>
-              <Link to={`/portal/${authorsModuleName}/create`}>
+              <Link to={`/portal/${coursesModuleName}/create`}>
                 {`Create ${capitalize(coursesModuleName)}`}
               </Link>
             </Menu.Item>
             <Menu.Item key={`${coursesModuleName}/list`}>
-              <Link to={`/portal/${authorsModuleName}/list`}>
+              <Link to={`/portal/${coursesModuleName}/list`}>
                 {`All ${capitalize(coursesModuleName)}s`}
               </Link>
             </Menu.Item>

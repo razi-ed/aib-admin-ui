@@ -7,6 +7,7 @@ import Users from './modules/users/pages/users';
 import Categories, {moduleName as CategoryModuleName} from './modules/categories/pages/index.jsx';
 import Authors, {moduleName as AuthorsModuleName} from './modules/authors/pages/index.jsx';
 import Coaches, {moduleName as CoachesModuleName} from './modules/coaches/pages/index.jsx';
+import { ListCoursePage, UpsertCoursePage, UpsertCourseBasicDetailsPage, moduleName as CourseModuleName} from './modules/courses/pages';
 
 import './App.css';
 
@@ -37,6 +38,13 @@ const App = () => {
 
         <Route path={`${CoachesModuleName}`} element={<Coaches />} />
         <Route path={`${CoachesModuleName}/:keyId`} element={<Coaches />} />
+
+        <Route path={`${CourseModuleName}/list`} element={<ListCoursePage />} />
+        <Route path={`${CourseModuleName}/create`} element={<UpsertCourseBasicDetailsPage />} />
+        <Route path={`${CourseModuleName}/basic/:courseId`} element={<UpsertCourseBasicDetailsPage />} />
+        <Route path={`${CourseModuleName}/batch/:courseId`} element={<UpsertCoursePage />} />
+        <Route path={`${CourseModuleName}/module/:courseId`} element={<UpsertCoursePage />} />
+        <Route path={`${CourseModuleName}/thumbnail/:courseId`} element={<UpsertCoursePage />} />
         
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
@@ -45,8 +53,8 @@ const App = () => {
           acts like a catch-all for URLs that we don't have explicit
           routes for.
         */}
-        <Route path="*" element={<p>404</p>} />
       </Route>
+      {/* <Route path="*" element={<p>404</p>} /> */}
     </Routes>
   );
 }
