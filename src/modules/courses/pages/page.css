@@ -1,15 +1,27 @@
 .course-upsert-container {
-    height: 100%;
-    width: 100%;
-    overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+.create-source-header {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+.ant-col.ant-col-8.basic-details-vertical-section {
+  padding: 0 2.75rem !important;
+}
+
+.ant-col.ant-col-8.basic-details-vertical-section:not(:last-child) {
+  border-right: 1.5px solid rgba(217, 217, 217, 0.6);
 }
 
 .course-section-container {
-    height: 700px;
-    width: 900px;
-    background-color: bisque;
+  height: 700px;
+  width: 900px;
+  background-color: bisque;
 }
 
 #course-upsert-basic .ant-input-number {
-    width: 100%;
+  width: 100%;
 }

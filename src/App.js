@@ -1,22 +1,40 @@
 // import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 
-import Layout from './modules/common/components/layout';
-import Users from './modules/users/pages/users';
-import Categories, {moduleName as CategoryModuleName} from './modules/categories/pages/index.jsx';
-import Authors, {moduleName as AuthorsModuleName} from './modules/authors/pages/index.jsx';
-import Coaches, {moduleName as CoachesModuleName} from './modules/coaches/pages/index.jsx';
-import { ListCoursePage, UpsertCoursePage, UpsertCourseBasicDetailsPage, moduleName as CourseModuleName} from './modules/courses/pages';
+import Layout from "./modules/common/components/layout";
+import Users from "./modules/users/pages/users";
+import Categories, {
+  moduleName as CategoryModuleName,
+} from "./modules/categories/pages/index.jsx";
+import Authors, {
+  moduleName as AuthorsModuleName,
+} from "./modules/authors/pages/index.jsx";
+import Coaches, {
+  moduleName as CoachesModuleName,
+} from "./modules/coaches/pages/index.jsx";
+import {
+  ListCoursePage,
+  UpsertCoursePage,
+  UpsertCourseBasicDetailsPage,
+  moduleName as CourseModuleName,
+} from "./modules/courses/pages";
 
-import './App.css';
+import "./App.css";
+import CreateCourceContainer from "./modules/courses/pages/CreateSourceContainer";
 
 const App = () => {
   // const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = useSelector(store => store.auth.user);
+  const currentUser = useSelector((store) => store.auth.user);
 
-  if (!currentUser.id && location.pathname.includes('portal')) {
+  if (!currentUser.id && location.pathname.includes("portal")) {
     return <Navigate to="/auth/login" state={{ from: location }} />;
   }
   // useEffect(() => {
@@ -27,12 +45,12 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/portal" element={<Layout />} >
+      <Route path="/portal" element={<Layout />}>
         <Route index element={<p>home</p>} />
 
         <Route path={`${CategoryModuleName}`} element={<Categories />} />
         <Route path={`${CategoryModuleName}/:keyId`} element={<Categories />} />
-        
+
         <Route path={`${AuthorsModuleName}`} element={<Authors />} />
         <Route path={`${AuthorsModuleName}/:keyId`} element={<Authors />} />
 
@@ -40,12 +58,27 @@ const App = () => {
         <Route path={`${CoachesModuleName}/:keyId`} element={<Coaches />} />
 
         <Route path={`${CourseModuleName}/list`} element={<ListCoursePage />} />
-        <Route path={`${CourseModuleName}/create`} element={<UpsertCourseBasicDetailsPage />} />
-        <Route path={`${CourseModuleName}/basic/:courseId`} element={<UpsertCourseBasicDetailsPage />} />
-        <Route path={`${CourseModuleName}/batch/:courseId`} element={<UpsertCoursePage />} />
-        <Route path={`${CourseModuleName}/module/:courseId`} element={<UpsertCoursePage />} />
-        <Route path={`${CourseModuleName}/thumbnail/:courseId`} element={<UpsertCoursePage />} />
-        
+        <Route
+          path={`${CourseModuleName}/create`}
+          element={<CreateCourceContainer />}
+        />
+        <Route
+          path={`${CourseModuleName}/basic/:courseId`}
+          element={<UpsertCourseBasicDetailsPage />}
+        />
+        <Route
+          path={`${CourseModuleName}/batch/:courseId`}
+          element={<UpsertCoursePage />}
+        />
+        <Route
+          path={`${CourseModuleName}/module/:courseId`}
+          element={<UpsertCoursePage />}
+        />
+        <Route
+          path={`${CourseModuleName}/thumbnail/:courseId`}
+          element={<UpsertCoursePage />}
+        />
+
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
         {/*
@@ -57,6 +90,6 @@ const App = () => {
       {/* <Route path="*" element={<p>404</p>} /> */}
     </Routes>
   );
-}
+};
 
 export default App;
