@@ -8,6 +8,9 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import AuthLayout from './modules/auth/components/auth-layout';
+import LoginPage from './modules/auth/pages/login';
+
 import Layout from "./modules/common/components/layout";
 import Users from "./modules/users/pages/users";
 import Categories, {
@@ -37,6 +40,7 @@ const App = () => {
   if (!currentUser.id && location.pathname.includes("portal")) {
     return <Navigate to="/auth/login" state={{ from: location }} />;
   }
+
   // useEffect(() => {
   //   if (!currentUser.id && location.pathname.includes('/portal')) {
   //     navigate("/auth/login", { replace: true, state:{ from: location } });
@@ -86,8 +90,18 @@ const App = () => {
           acts like a catch-all for URLs that we don't have explicit
           routes for.
         */}
+        <Route path="*" element={<p>home</p>} />
       </Route>
-      {/* <Route path="*" element={<p>404</p>} /> */}
+      <Route path="/auth" element={<AuthLayout />} >
+        <Route path="login" element={<LoginPage />} />
+        {/*
+          Using path="*"" means "match anything", so this route
+          acts like a catch-all for URLs that we don't have explicit
+          routes for.
+        */}
+        <Route path="*" element={<p>404</p>} />
+      </Route>
+      <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   );
 };

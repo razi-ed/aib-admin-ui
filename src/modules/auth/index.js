@@ -27,6 +27,7 @@ const App = () => {
         */}
         <Route path="*" element={<p>404</p>} />
       </Route>
+      <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   );
 }
