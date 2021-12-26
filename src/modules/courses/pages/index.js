@@ -1,5 +1,5 @@
-export { ListCoursePage } from './list';
-export { UpsertCoursePage } from './upsert';
-export { UpsertCourseBasicDetailsPage } from './basic';
+export { ListCoursePage } from "./list";
+export { UpsertBatchPage } from "./upsert";
+export { UpsertCourseBasicDetailsPage } from "./basic";
 
-export { moduleName } from '../constants';
+export { moduleName } from "../constants";
