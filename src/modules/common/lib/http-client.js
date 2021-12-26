@@ -11,6 +11,11 @@ const httpClient = Axios.create({
     timeout: 1000 * 15,
 });
 
+const assetHttpClient = Axios.create({
+    baseURL: process.env.REACT_APP_ASSET_API,
+    timeout: 1000 * 15,
+});
+
 function addAuthHeaderToRequest(config) {
 
     const serializedAccessToken = window.localStorage.getItem(authTokensStoragKeys.ACCESS)
@@ -81,4 +86,16 @@ httpClient.interceptors.response.use(
     errorHandler,
 );
 
+assetHttpClient.interceptors.request.use(
+    addAuthHeaderToRequest,
+    undefined
+);
+
+assetHttpClient.interceptors.response.use(
+    undefined,
+    errorHandler,
+);
+
 export default httpClient;
+
+export { assetHttpClient };
