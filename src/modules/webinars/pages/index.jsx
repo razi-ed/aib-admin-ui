@@ -23,6 +23,7 @@ export default function UsersPage(params) {
     const userList = useSelector(state => state.user.list)
     const loading = useSelector(state => state[moduleName].queryStatus === actionStatuses.PENDING)
     const pending = useSelector(state => state[moduleName].mutationStatus === actionStatuses.PENDING)
+    console.log(list)
 
     const { keyId = "" } = useParams();
     
@@ -34,7 +35,6 @@ export default function UsersPage(params) {
     }, [])
 
     useEffect(() => {
-        console.log(keyId)
         if (Boolean(keyId)) {
             setShowModal(true)
         } else {
@@ -61,8 +61,8 @@ export default function UsersPage(params) {
     )
 
     const onSubmit = useCallback(
-        ({name, description}) => {
-            dispatch(upsertService({name, description, id: keyId}))
+        ({name, designation}) => {
+            dispatch(upsertService({name, designation, id: keyId}))
             .unwrap()
             .then((result) => {
                 const { hasErrored = false } = result;
@@ -134,20 +134,20 @@ export default function UsersPage(params) {
     
 const columns = useMemo(() => ([
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        title: 'Title',
+        dataIndex: 'title',
+        key: 'title',
         sorter: {
-            compare: (a, b) => a.name.length - b.name.length,
+            compare: (a, b) => a.title - b.title,
         },
         ellipsis: true,
     },
     {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
         sorter: {
-            compare: (a, b) => a.description - b.description,
+            compare: (a, b) => a.date - b.date,
         },
         ellipsis: true,
     },

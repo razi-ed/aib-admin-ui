@@ -4,9 +4,14 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-
 
 import Layout from './modules/common/components/layout';
 import Users from './modules/users/pages/users';
-import Categories, {moduleName as CategoryModuleName} from './modules/categories/pages/index.jsx';
-import Authors, {moduleName as AuthorsModuleName} from './modules/authors/pages/index.jsx';
-import Coaches, {moduleName as CoachesModuleName} from './modules/coaches/pages/index.jsx';
+import Categories, { moduleName as CategoryModuleName } from './modules/categories/pages/index.jsx';
+import Authors, { moduleName as AuthorsModuleName } from './modules/authors/pages/index.jsx';
+import Coaches, { moduleName as CoachesModuleName } from './modules/coaches/pages/index.jsx';
+
+import ContactUs, { moduleName as ContactUsModuleName } from './modules/contactUs/pages/index.jsx';
+import HireStudent, { moduleName as HireStudentModuleName } from './modules/hireStudent/pages/index.jsx';
+import EmailEnquiry, { moduleName as EmailEnquiryModuleName } from './modules/emailEnquiry/pages/index.jsx';
+import Webinars, { moduleName as WebinarsModuleName } from './modules/webinars/pages/index.jsx';
 
 import './App.css';
 
@@ -31,15 +36,31 @@ const App = () => {
 
         <Route path={`${CategoryModuleName}`} element={<Categories />} />
         <Route path={`${CategoryModuleName}/:keyId`} element={<Categories />} />
-        
+
         <Route path={`${AuthorsModuleName}`} element={<Authors />} />
         <Route path={`${AuthorsModuleName}/:keyId`} element={<Authors />} />
 
         <Route path={`${CoachesModuleName}`} element={<Coaches />} />
         <Route path={`${CoachesModuleName}/:keyId`} element={<Coaches />} />
-        
+
+        <Route path={`${ContactUsModuleName}`} element={<ContactUs />} />
+        <Route path={`${ContactUsModuleName}/:keyId`} element={<ContactUs />} />
+
+        <Route path={`${HireStudentModuleName}`} element={<HireStudent />} />
+        <Route path={`${HireStudentModuleName}/:keyId`} element={<HireStudent />} />
+
+        <Route path={`${EmailEnquiryModuleName}`} element={<EmailEnquiry />} />
+        <Route path={`${EmailEnquiryModuleName}/:keyId`} element={<EmailEnquiry />} />
+
+        <Route path={`${WebinarsModuleName}`} element={<Webinars />} />
+        <Route path={`${WebinarsModuleName}/:keyId`} element={<Webinars />} />
+
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
+
+
+
+
         {/*
           Using path="*"" means "match anything", so this route
           acts like a catch-all for URLs that we don't have explicit
