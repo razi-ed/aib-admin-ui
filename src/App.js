@@ -24,13 +24,12 @@ import Coaches, {
 } from "./modules/coaches/pages/index.jsx";
 import {
   ListCoursePage,
-  UpsertCoursePage,
   UpsertCourseBasicDetailsPage,
   moduleName as CourseModuleName,
 } from "./modules/courses/pages";
 
 import "./App.css";
-import CreateCourceContainer from "./modules/courses/pages/CreateSourceContainer";
+import { UpsertBatchPage } from "./modules/courses/pages/upsert";
 
 const App = () => {
   // const navigate = useNavigate();
@@ -64,7 +63,7 @@ const App = () => {
         <Route path={`${CourseModuleName}/list`} element={<ListCoursePage />} />
         <Route
           path={`${CourseModuleName}/create`}
-          element={<CreateCourceContainer />}
+          element={<UpsertCourseBasicDetailsPage />}
         />
         <Route
           path={`${CourseModuleName}/basic/:courseId`}
@@ -72,15 +71,15 @@ const App = () => {
         />
         <Route
           path={`${CourseModuleName}/batch/:courseId`}
-          element={<UpsertCoursePage />}
+          element={<UpsertBatchPage />}
         />
         <Route
           path={`${CourseModuleName}/module/:courseId`}
-          element={<UpsertCoursePage />}
+          element={<UpsertBatchPage />}
         />
         <Route
           path={`${CourseModuleName}/thumbnail/:courseId`}
-          element={<UpsertCoursePage />}
+          element={<UpsertBatchPage />}
         />
 
         <Route path="users" element={<Users />} />
