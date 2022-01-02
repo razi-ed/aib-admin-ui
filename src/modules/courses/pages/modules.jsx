@@ -191,10 +191,10 @@ export function UpsertCourseModulesDetailsPage(params) {
                 </Button>
             </aside>
         )
-    }, [sectionType]);
+    }, [sectionType, moduleId]);
 
     return (
-        <sections id="upsert-course-modules">
+        <section id="upsert-course-modules">
         <Row
             style={{ padding: "2rem 1rem" }}
             justify="space-between"
@@ -234,6 +234,6 @@ export function UpsertCourseModulesDetailsPage(params) {
                 />
             </Col>
         </Row>
-      </sections>
+      </section>
     )
 }

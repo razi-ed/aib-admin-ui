@@ -30,7 +30,6 @@ export default function PDFSectionForm(params) {
             sectionId,
             ...payload,
         }
-        debugger
         await dispatch(addSectionDetails({ sectionId, moduleId, data }));
         message.success({ content: 'Saved!', key, duration: 2 });
     }, [pdfUrl, sectionId, moduleId]);

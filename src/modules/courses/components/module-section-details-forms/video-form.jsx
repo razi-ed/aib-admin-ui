@@ -30,7 +30,6 @@ export default function VideoSectionForm(params) {
             sectionId,
             ...payload,
         }
-        debugger
         await dispatch(addSectionDetails({ sectionId, moduleId, data }));
         message.success({ content: 'Saved!', key, duration: 2 });
     }, [videoUrl, sectionId, moduleId]);
@@ -53,7 +52,6 @@ export default function VideoSectionForm(params) {
             file,
             fileName: `${moduleId}__${sectionId}`, folder:`courses/${slug}/videos`
             })
-            debugger
             await setVideoUrl(resp.secure_url)
             await setVideoFile(file)
             message.success({ content: 'Uploaded!', key, duration: 2 });
