@@ -186,7 +186,7 @@ export function UpsertCourseModulesDetailsPage(params) {
                         {'Live'}
                     </Select.Option>
                 </Select>
-                <Button disabled={!sectionType} icon={<PlusOutlined />} onClick={onAddSection} type="primary">
+                <Button disabled={!sectionType || !moduleId} icon={<PlusOutlined />} onClick={onAddSection} type="primary">
                     Add Section
                 </Button>
             </aside>
