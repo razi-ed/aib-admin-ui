@@ -25,11 +25,12 @@ import Coaches, {
 import {
   ListCoursePage,
   UpsertCourseBasicDetailsPage,
+  UpsertCourseBatchDetailsPage,
+  UpsertCourseModulesDetailsPage,
   moduleName as CourseModuleName,
 } from "./modules/courses/pages";
 
 import "./App.css";
-import { UpsertBatchPage } from "./modules/courses/pages/upsert";
 
 const App = () => {
   // const navigate = useNavigate();
@@ -37,6 +38,7 @@ const App = () => {
   const currentUser = useSelector((store) => store.auth.user);
 
   if (!currentUser.id && location.pathname.includes("portal")) {
+    console.log({currentUser, path: location.pathname});
     return <Navigate to="/auth/login" state={{ from: location }} />;
   }
 
@@ -70,16 +72,21 @@ const App = () => {
           element={<UpsertCourseBasicDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/batch/:courseId`}
-          element={<UpsertBatchPage />}
+          path={`${CourseModuleName}/batch/:slug/:courseId`}
+          element={<UpsertCourseBatchDetailsPage />}
+        />
+        
+        <Route
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:sectionId`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/module/:courseId`}
-          element={<UpsertBatchPage />}
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/thumbnail/:courseId`}
-          element={<UpsertBatchPage />}
+          path={`${CourseModuleName}/module/:slug/:courseId`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
 
         <Route path="users" element={<Users />} />

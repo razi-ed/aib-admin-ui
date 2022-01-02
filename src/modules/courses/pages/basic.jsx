@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Form,
   Input,
@@ -17,9 +17,13 @@ import {
   DatePicker,
   Tabs,
   Steps,
+  Alert,
+  Upload,
+  message,
 } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { capitalize, cloneDeep } from "lodash";
 
 import LoadingSpinner from "../../common/components/loading-spinner";
 
@@ -35,6 +39,8 @@ import { getListService as getCategoriesService } from "../../categories/service
 import { actionStatuses } from "../../common/constants/action-status.constants";
 
 import "./page.css";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { imageFileUploader } from "../../common/lib/asset-utils";
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -48,10 +54,34 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+function dataURLtoFile(dataurl, filename) {
+ 
+  var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), 
+      n = bstr.length, 
+      u8arr = new Uint8Array(n);
+      
+  while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  
+  return new File([u8arr], filename, {type:mime});
+}
+
 export function UpsertCourseBasicDetailsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courseId = "" } = useParams();
+  const [ imgFile, setImgFile ] = useState();
+  const [ imageUrl, setImageUrl ] = useState();
+  const formRef = useRef(null);
 
   const authorList = useSelector((state) => state.author.list);
   const categories = useSelector((state) => state.category.list);
@@ -68,44 +98,69 @@ export function UpsertCourseBasicDetailsPage() {
   }, []);
 
   function handleSaveAndNext() {
-    navigate("/portal/course/batch/adasf");
+    formRef.current.submit()
   }
 
   const onSubmit = useCallback(
-    (data) => {
-      console.log(data);
-      // dispatch(upsertService({name, description, id: keyId}))
-      // .unwrap()
-      // .then((result) => {
-      //     const { hasErrored = false } = result;
-      //     if (hasErrored) {
-      //         notification.error({
-      //             placement: 'topRight',
-      //             message: `${keyId ? 'Updation' : 'Creation'} failed`,
-      //             description: `${capitalize(moduleName)} ${keyId ? 'updation' : 'creation'} has failed`,
-      //             duration: 3
-      //         })
-      //     } else {
-      //         closeManageModal();
-      //         dispatch(getListService());
-      //         notification.success({
-      //             placement: 'topRight',
-      //             message: `${keyId ? 'Updation' : 'Creation'} Success`,
-      //             description: `${capitalize(moduleName)} ${keyId ? 'updation' : 'creation'} was successful`,
-      //             duration: 3
-      //         })
-      //     };
-      // })
-      // .catch((rejectedValueOrSerializedError) => {
-      //     notification.error({
-      //         placement: 'topRight',
-      //         message: `${keyId ? 'Updation' : 'Creation'} failed`,
-      //         description: `${capitalize(moduleName)} ${keyId ? 'updation' : 'creation'} has failed`,
-      //         duration: 3
-      //     })
-      // })
+    async (payload) => {
+      console.log(payload);
+      if(!imageUrl) {
+        message.error('Upload thumbnail!');
+        return
+      }
+      
+      const upsertResponse = await dispatch(upsertService({payload, id: courseId, step: 'basic'})).unwrap();
+      const { hasErrored = false } = upsertResponse;
+      if (hasErrored) {
+          notification.error({
+              placement: 'topRight',
+              message: `${courseId ? 'Updation' : 'Creation'} failed`,
+              description: `${capitalize(moduleName)} ${courseId ? 'updation' : 'creation'} has failed`,
+              duration: 3
+          })
+          return;
+      }
+      const { id, slug } = upsertResponse;
+      const file = dataURLtoFile(imageUrl, `${slug}-thumbnail`);
+      const imageUploadResponse = await imageFileUploader({file, fileName: `${slug}-thumbnail`, folder: `courses/${slug}/images`}, {});
+      const { secure_url: thumbnailUrl } = imageUploadResponse;
+      console.log({imageUploadResponse})
+      const updateResponse = await dispatch(upsertService({payload: { thumbnailUrl }, id, step: 'thumbnail'})).unwrap()
+      if (hasErrored) {
+        notification.error({
+            placement: 'topRight',
+            message: `${courseId ? 'Updation' : 'Creation'} failed`,
+            description: `${capitalize(moduleName)} ${courseId ? 'updation' : 'creation'} has failed`,
+            duration: 3
+        })
+        return;
+      }
+      const { id: updatedCourseId } = updateResponse;
+      navigate(`/portal/course/batch/${slug}/${updatedCourseId}`);
     },
-    [courseId]
+    [courseId, imageUrl]
+  );
+
+  const imageFilePreUploadhook = useCallback((file)=> {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    // return isJpgOrPng && isLt2M;
+    setImgFile(file);
+    getBase64(file, setImageUrl)
+    return false;
+  }, [])
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
   );
 
   return (
@@ -123,7 +178,7 @@ export function UpsertCourseBasicDetailsPage() {
           </Steps>
         </Col>
         <Col className="create-source-header-actions">
-          <Button style={{ marginRight: "12px" }}>Clear all</Button>
+          {/* <Button style={{ marginRight: "12px" }}>Clear all</Button> */}
           <Button onClick={handleSaveAndNext} type="primary">
             Save & Next{" "}
           </Button>
@@ -136,6 +191,7 @@ export function UpsertCourseBasicDetailsPage() {
           onFinish={onSubmit}
           validateMessages={validateMessages}
           validateTrigger="onSubmit"
+          ref={formRef}
         >
           <Row gutter={16} style={{ margin: 0, marginTop: "3.5rem" }}>
             <Col className="basic-details-vertical-section" span={8}>
@@ -206,7 +262,7 @@ export function UpsertCourseBasicDetailsPage() {
               <Form.Item
                 name={"brilliancePoints"}
                 label="Brilliance Points"
-                rules={[{ type: "number", min: 0, max: 999, required: false }]}
+                rules={[{ type: "number", min: 0, max: 9999, required: false }]}
               >
                 <InputNumber />
               </Form.Item>
@@ -214,7 +270,7 @@ export function UpsertCourseBasicDetailsPage() {
               <Form.Item
                 name={"sellingPrice"}
                 label="Selling Price"
-                rules={[{ type: "number", min: 1, max: 99999, required: true }]}
+                rules={[{ type: "number", min: 0, max: 99999, required: true }]}
               >
                 <InputNumber />
               </Form.Item>
@@ -222,14 +278,33 @@ export function UpsertCourseBasicDetailsPage() {
               <Form.Item
                 name={"discountedPrice"}
                 label="Discounted Price"
-                rules={[{ type: "number", min: 1, max: 99999, required: true }]}
+                rules={[{ type: "number", min: 0, max: 99999, required: true }]}
               >
                 <InputNumber />
               </Form.Item>
             </Col>
             <Col className="basic-details-vertical-section" span={8}>
               <Typography.Title level={5}>Images</Typography.Title>
-              <div>image</div>
+              
+              <Upload
+                name="avatar"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                beforeUpload={imageFilePreUploadhook}
+                onRemove={(_file) => {
+                  setImageUrl('')
+                  setImgFile(null);
+                }}
+                fileList={imgFile ? [imgFile] : []}
+              >
+                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              </Upload>
+                      
+              <Alert
+                description="Image should be 350px X 450px, .png .jpg .jpeg Supported, Max size 2MB."
+                type="info"
+              />
             </Col>
           </Row>
         </Form>
