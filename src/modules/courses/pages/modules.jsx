@@ -21,7 +21,7 @@ import {
 export function UpsertCourseModulesDetailsPage(params) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { slug = '', courseId = '', moduleId = '', sectionId = '' } = useParams();
+    const { slug = '', courseId = '', moduleId = '', sectionId = '', moduleType = '' } = useParams();
 
     const modules = useSelector(state => state[moduleName].modules)
     const sections = useSelector(state => state[moduleName].sections && state[moduleName].sections[moduleId] ? state[moduleName].sections[moduleId] : []);
@@ -30,14 +30,22 @@ export function UpsertCourseModulesDetailsPage(params) {
 
     const onModuleAdd = useCallback(() => {
         const payload = {
-            moduleId: secureUuid()
+            moduleId: secureUuid(),
+            moduleType: 'CONTENT',
         }
         dispatch(addModule(payload))
     }, []);
 
-    const onModuleSelect = useCallback((id) => {
-        // console.log(`/${moduleName}/module/${slug}/${courseId}/${id}`);
-        navigate(`/portal/${moduleName}/module/${slug}/${courseId}/${id}`)
+    const onProjectAdd = useCallback(() => {
+        const payload = {
+            moduleId: secureUuid(),
+            moduleType: 'PROJECT',
+        }
+        dispatch(addModule(payload))
+    }, []);
+
+    const onModuleSelect = useCallback((id, type) => {
+        navigate(`/portal/${moduleName}/module/${slug}/${courseId}/${id}/${type}`);
     }, [moduleName, slug, courseId]);
 
     const onAddSection = useCallback(() => {
@@ -53,7 +61,7 @@ export function UpsertCourseModulesDetailsPage(params) {
 
     const onSectionSelect = useCallback((id) => {
         // console.log(`/${moduleName}/module/${slug}/${courseId}/${moduleId}/${id}`);
-        navigate(`/portal/${moduleName}/module/${slug}/${courseId}/${moduleId}/${id}`)
+        navigate(`/portal/${moduleName}/module/${slug}/${courseId}/${moduleId}/${moduleType}/${id}`)
     }, [moduleName, slug, courseId, moduleId]);
 
     const onRemoveModule = useCallback((id) => {
@@ -97,13 +105,18 @@ export function UpsertCourseModulesDetailsPage(params) {
                     key={module.moduleId}
                     onClick={() => {
                         if (!isSelected) {
-                            onModuleSelect(module.moduleId)
+                            onModuleSelect(module.moduleId, module.moduleType || 'CONTENT')
                         }
                     }}
                     data-selected={isSelected ? 'yes' : 'no'}
                 >
                     <Typography.Title level={4} >
-                        {`Module ${idx+1}`}
+                        
+                        {
+                            module.moduleType === 'PROJECT' ?
+                                `PROJECT ${idx+1}` :
+                                `Module ${idx+1}`
+                        }
                     </Typography.Title>
                     <Tooltip title="delete">
                         <Button
@@ -162,7 +175,7 @@ export function UpsertCourseModulesDetailsPage(params) {
     const renderAddModuleForm = useCallback(() => {
         return (
             <aside className="upsert-course-modules-adder-container">
-                <Button icon={<PlusOutlined />} disabled onClick={onModuleAdd}>
+                <Button icon={<PlusOutlined />} onClick={onProjectAdd}>
                     Add Project
                 </Button>
                 <Button icon={<PlusOutlined />} onClick={onModuleAdd} type="primary">
@@ -185,8 +198,11 @@ export function UpsertCourseModulesDetailsPage(params) {
                     <Select.Option key={'LIVE'}>
                         {'Live'}
                     </Select.Option>
+                    <Select.Option key={'PROJECT'}>
+                        {'Project'}
+                    </Select.Option>
                 </Select>
-                <Button disabled={!sectionType || !moduleId} icon={<PlusOutlined />} onClick={onAddSection} type="primary">
+                <Button disabled={!sectionType || !moduleId || moduleType === 'PROJECT'} icon={<PlusOutlined />} onClick={onAddSection} type="primary">
                     Add Section
                 </Button>
             </aside>

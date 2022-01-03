@@ -108,7 +108,8 @@ export function UpsertCourseBasicDetailsPage() {
         message.error('Upload thumbnail!');
         return
       }
-      
+      const msgKey = 'CREATING';
+      message.loading({ content: 'Saving...', key: msgKey });
       const upsertResponse = await dispatch(upsertService({payload, id: courseId, step: 'basic'})).unwrap();
       const { hasErrored = false } = upsertResponse;
       if (hasErrored) {
@@ -136,6 +137,7 @@ export function UpsertCourseBasicDetailsPage() {
         return;
       }
       const { id: updatedCourseId } = updateResponse;
+      message.success({ content: 'Saved!', key: msgKey, duration: 2 });
       navigate(`/portal/course/batch/${slug}/${updatedCourseId}`);
     },
     [courseId, imageUrl]

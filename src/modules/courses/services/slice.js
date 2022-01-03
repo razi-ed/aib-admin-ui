@@ -86,6 +86,16 @@ export const slice = createSlice({
       });
       state.sections[moduleId][idx] = data;
     },
+    addProjectModuleDetails(state, action) {
+      const { moduleId, data } = action.payload;
+      const idx = state.modules.findIndex((module)=> {
+        return module.moduleId === moduleId;
+      });
+      state.modules[idx] = {
+        ...state.modules[idx],
+        ...data,
+      };
+    },
     removeSection(state, action) {
       const { moduleId, sectionId } = action.payload
       state.sections[moduleId] = 
@@ -130,6 +140,7 @@ export const {
   removeModule,
   removeSection,
   addSectionDetails,
+  addProjectModuleDetails,
 } = slice.actions
 
 export default slice.reducer

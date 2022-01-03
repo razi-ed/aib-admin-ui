@@ -2,10 +2,12 @@ import {useCallback, useState,} from 'react';
 import { useParams } from 'react-router-dom';
 import {Button, Form, Input, InputNumber, message, Radio, Row, Upload} from 'antd';
 
-import { videoFileUploader } from '../../../common/lib/asset-utils';
+
+import { documentFileUploader } from '../../../common/lib/asset-utils';
 import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { addSectionDetails } from '../../services/slice';
+import { Document, Page } from 'react-pdf';
 
 const uploadButton = (
     <div>
@@ -34,7 +36,7 @@ export default function PDFSectionForm(params) {
         message.success({ content: 'Saved!', key, duration: 2 });
     }, [pdfUrl, sectionId, moduleId]);
 
-    const videoUploadPreHook = useCallback(
+    const docUploadPreHook = useCallback(
         async (file) => {
             // const isMovOrMp4 = file.type === 'video/mov' || file.type === 'video/mp4';
             // if (!isMovOrMp4) {
@@ -48,9 +50,9 @@ export default function PDFSectionForm(params) {
             message.loading({ content: 'Uploading...', key });
             
             // return isJpgOrPng && isLt2M;
-            const resp = await videoFileUploader({
+            const resp = await documentFileUploader({
             file,
-            fileName: `${moduleId}__${sectionId}`, folder:`courses/${slug}/videos`
+            fileName: `${moduleId}__${sectionId}`, folder:`courses/${slug}/pdf`
             })
             await setPDFUrl(resp.secure_url)
             await setPDFFile(file)
@@ -100,14 +102,22 @@ export default function PDFSectionForm(params) {
                     name="avatar"
                     listType="picture-card"
                     showUploadList={false}
-                    beforeUpload={videoUploadPreHook}
+                    beforeUpload={docUploadPreHook}
                     onRemove={(_file) => {
                         setPDFUrl('')
                         setPDFFile(null)
                     }}
                     fileList={pdfFile ? [pdfFile] : []}
                 >
-                    {pdfUrl ? <iframe src={pdfUrl} title='pdf' style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%' }} /> : uploadButton}
+                    {pdfUrl ? (
+                        <Document
+                        file={pdfUrl}
+                        
+                        // onLoadSuccess={onDocumentLoadSuccess}
+                      >
+                        <Page />
+                      </Document>
+                    ) : uploadButton}
                 </Upload>
               </Row>
               <Form.Item>

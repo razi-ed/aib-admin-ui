@@ -77,7 +77,11 @@ const App = () => {
         />
         
         <Route
-          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:sectionId`}
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:moduleType/:sectionId`}
+          element={<UpsertCourseModulesDetailsPage />}
+        />
+        <Route
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:moduleType`}
           element={<UpsertCourseModulesDetailsPage />}
         />
         <Route
