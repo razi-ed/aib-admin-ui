@@ -10,18 +10,17 @@ import {
 
 import AuthLayout from './modules/auth/components/auth-layout';
 import LoginPage from './modules/auth/pages/login';
+import Layout from './modules/common/components/layout';
+import Users from './modules/users/pages/users';
+import Categories, { moduleName as CategoryModuleName } from './modules/categories/pages/index.jsx';
+import Authors, { moduleName as AuthorsModuleName } from './modules/authors/pages/index.jsx';
+import Coaches, { moduleName as CoachesModuleName } from './modules/coaches/pages/index.jsx';
 
-import Layout from "./modules/common/components/layout";
-import Users from "./modules/users/pages/users";
-import Categories, {
-  moduleName as CategoryModuleName,
-} from "./modules/categories/pages/index.jsx";
-import Authors, {
-  moduleName as AuthorsModuleName,
-} from "./modules/authors/pages/index.jsx";
-import Coaches, {
-  moduleName as CoachesModuleName,
-} from "./modules/coaches/pages/index.jsx";
+import ContactUs, { moduleName as ContactUsModuleName } from './modules/contactUs/pages/index.jsx';
+import HireStudent, { moduleName as HireStudentModuleName } from './modules/hireStudent/pages/index.jsx';
+import EmailEnquiry, { moduleName as EmailEnquiryModuleName } from './modules/emailEnquiry/pages/index.jsx';
+import Webinars, { moduleName as WebinarsModuleName } from './modules/webinars/pages/index.jsx';
+
 import {
   ListCoursePage,
   UpsertCourseBasicDetailsPage,
@@ -92,9 +91,24 @@ const App = () => {
           path={`${CourseModuleName}/module/:slug/:courseId`}
           element={<UpsertCourseModulesDetailsPage />}
         />
+        <Route path={`${ContactUsModuleName}`} element={<ContactUs />} />
+        <Route path={`${ContactUsModuleName}/:keyId`} element={<ContactUs />} />
+
+        <Route path={`${HireStudentModuleName}`} element={<HireStudent />} />
+        <Route path={`${HireStudentModuleName}/:keyId`} element={<HireStudent />} />
+
+        <Route path={`${EmailEnquiryModuleName}`} element={<EmailEnquiry />} />
+        <Route path={`${EmailEnquiryModuleName}/:keyId`} element={<EmailEnquiry />} />
+
+        <Route path={`${WebinarsModuleName}`} element={<Webinars />} />
+        <Route path={`${WebinarsModuleName}/:keyId`} element={<Webinars />} />
 
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
+
+
+
+
         {/*
           Using path="*"" means "match anything", so this route
           acts like a catch-all for URLs that we don't have explicit

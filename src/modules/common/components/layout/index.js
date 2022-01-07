@@ -17,6 +17,10 @@ import { moduleName as categoryModuleName } from '../../../categories/constants'
 import { moduleName as authorsModuleName } from '../../../authors/constants';
 import { moduleName as coachesModuleName } from '../../../coaches/constants';
 import { moduleName as coursesModuleName } from '../../../courses/constants';
+import { moduleName as contactUsModuleName } from '../../../contactUs/constants';
+import { moduleName as hireStudentModuleName } from '../../../hireStudent/constants';
+import { moduleName as emailEnquirModuleName } from '../../../emailEnquiry/constants';
+import { moduleName as webinarsModuleName } from '../../../webinars/constants';
 
 import './layout.css';
 
@@ -71,6 +75,18 @@ export default function AppLayout(props) {
           </Menu.Item>
           <Menu.Item key={categoryModuleName} icon={<TagOutlined />}>
             <Link to={`/portal/${categoryModuleName}`}>{`${capitalize(categoryModuleName)}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={contactUsModuleName} icon={<TagOutlined />}>
+            <Link to={`/portal/${contactUsModuleName}`}>{`${capitalize(contactUsModuleName)}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={hireStudentModuleName} icon={<TagOutlined />}>
+            <Link to={`/portal/${hireStudentModuleName}`}>{`${capitalize(hireStudentModuleName)}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={emailEnquirModuleName} icon={<TagOutlined />}>
+            <Link to={`/portal/${emailEnquirModuleName}`}>{`${capitalize(emailEnquirModuleName)}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={webinarsModuleName} icon={<TagOutlined />}>
+            <Link to={`/portal/${webinarsModuleName}`}>{`${capitalize(webinarsModuleName)}`}</Link>
           </Menu.Item>
         </Menu>
       </Sider>

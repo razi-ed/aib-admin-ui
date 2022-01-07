@@ -6,6 +6,11 @@ import categoryReducer, { moduleName as categoriesModuleName } from '../../categ
 import authorReducer, { moduleName as authorsModuleName } from '../../authors/services/slice';
 import coachReducer, { moduleName as coachModuleName } from '../../coaches/services/slice';
 import courseReducer, { moduleName as courseModuleName } from '../../courses/services/slice';
+import contactUsReducer, { moduleName as contactUssModuleName } from '../../contactUs/services/slice';
+import hireStudentReducer, { moduleName as hireStudentModuleName } from '../../hireStudent/services/slice';
+import emailEnquiryReducer, { moduleName as emailEnquiryModuleName } from '../../emailEnquiry/services/slice';
+import webinarsReducer, { moduleName as webinarsModuleName } from '../../webinars/services/slice';
+
 
 const reducer = {
   auth: authReducer,
@@ -14,6 +19,10 @@ const reducer = {
   [authorsModuleName]: authorReducer,
   [coachModuleName]: coachReducer,
   [courseModuleName]: courseReducer,
+  [contactUssModuleName]: contactUsReducer,
+  [hireStudentModuleName]: hireStudentReducer,
+  [emailEnquiryModuleName]: emailEnquiryReducer,
+  [webinarsModuleName]: webinarsReducer,
 }
 
 export default configureStore({
