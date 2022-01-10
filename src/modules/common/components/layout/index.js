@@ -2,15 +2,21 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Layout, Menu, Dropdown, Divider } from 'antd';
-import { capitalize } from 'lodash';
+import { capitalize, replace } from 'lodash';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
   FormOutlined,
   TagOutlined,
-  IdcardOutlined,
   GroupOutlined,
+  IdcardOutlined,
+  UsergroupAddOutlined,
+  QuestionCircleOutlined,
+  FundProjectionScreenOutlined,
+  ContactsOutlined,
+  SolutionOutlined,
+  BarcodeOutlined,
 } from '@ant-design/icons';
 
 import { moduleName as categoryModuleName } from '../../../categories/constants';
@@ -21,6 +27,8 @@ import { moduleName as contactUsModuleName } from '../../../contactUs/constants'
 import { moduleName as hireStudentModuleName } from '../../../hireStudent/constants';
 import { moduleName as emailEnquirModuleName } from '../../../emailEnquiry/constants';
 import { moduleName as webinarsModuleName } from '../../../webinars/constants';
+import { moduleName as studentModuleName } from '../../../student/constants';
+import { moduleName as couponModuleName } from '../../../coupon/constants';
 
 import './layout.css';
 
@@ -70,23 +78,29 @@ export default function AppLayout(props) {
           <Menu.Item key={authorsModuleName} icon={<FormOutlined />}>
             <Link to={`/portal/${authorsModuleName}`}>{`${capitalize(authorsModuleName)}`}</Link>
           </Menu.Item>
-          <Menu.Item key={coachesModuleName} icon={<IdcardOutlined />}>
+          <Menu.Item key={coachesModuleName} icon={<ContactsOutlined />}>
             <Link to={`/portal/${coachesModuleName}`}>{`${capitalize(coachesModuleName)}`}</Link>
           </Menu.Item>
           <Menu.Item key={categoryModuleName} icon={<TagOutlined />}>
             <Link to={`/portal/${categoryModuleName}`}>{`${capitalize(categoryModuleName)}`}</Link>
           </Menu.Item>
-          <Menu.Item key={contactUsModuleName} icon={<TagOutlined />}>
-            <Link to={`/portal/${contactUsModuleName}`}>{`${capitalize(contactUsModuleName)}`}</Link>
+          <Menu.Item key={contactUsModuleName} icon={<IdcardOutlined />}>
+            <Link to={`/portal/${contactUsModuleName}`}>{`${capitalize(replace(contactUsModuleName, '-', ' '))}`}</Link>
           </Menu.Item>
-          <Menu.Item key={hireStudentModuleName} icon={<TagOutlined />}>
-            <Link to={`/portal/${hireStudentModuleName}`}>{`${capitalize(hireStudentModuleName)}`}</Link>
+          <Menu.Item key={hireStudentModuleName} icon={<UsergroupAddOutlined />}>
+            <Link to={`/portal/${hireStudentModuleName}`}>{`${capitalize(replace(hireStudentModuleName, '-', ' '))}`}</Link>
           </Menu.Item>
-          <Menu.Item key={emailEnquirModuleName} icon={<TagOutlined />}>
-            <Link to={`/portal/${emailEnquirModuleName}`}>{`${capitalize(emailEnquirModuleName)}`}</Link>
+          <Menu.Item key={emailEnquirModuleName} icon={<QuestionCircleOutlined />}>
+            <Link to={`/portal/${emailEnquirModuleName}`}>{`${capitalize(replace(emailEnquirModuleName, '-', ' '))}`}</Link>
           </Menu.Item>
-          <Menu.Item key={webinarsModuleName} icon={<TagOutlined />}>
-            <Link to={`/portal/${webinarsModuleName}`}>{`${capitalize(webinarsModuleName)}`}</Link>
+          <Menu.Item key={webinarsModuleName} icon={<FundProjectionScreenOutlined />}>
+            <Link to={`/portal/${webinarsModuleName}`}>{`${capitalize(replace(webinarsModuleName, '-', ' '))}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={studentModuleName} icon={<SolutionOutlined />}>
+            <Link to={`/portal/${studentModuleName}`}>{`${capitalize(replace(studentModuleName, '-', ' '))}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={couponModuleName} icon={<BarcodeOutlined />}>
+            <Link to={`/portal/${couponModuleName}`}>{`${capitalize(replace(couponModuleName, '-', ' '))}`}</Link>
           </Menu.Item>
         </Menu>
       </Sider>

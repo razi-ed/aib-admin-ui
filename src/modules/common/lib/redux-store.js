@@ -10,6 +10,8 @@ import contactUsReducer, { moduleName as contactUssModuleName } from '../../cont
 import hireStudentReducer, { moduleName as hireStudentModuleName } from '../../hireStudent/services/slice';
 import emailEnquiryReducer, { moduleName as emailEnquiryModuleName } from '../../emailEnquiry/services/slice';
 import webinarsReducer, { moduleName as webinarsModuleName } from '../../webinars/services/slice';
+import studentReducer, { moduleName as studentModuleName } from '../../student/services/slice';
+import couponReducer, { moduleName as couponModuleName } from '../../coupon/services/slice';
 
 
 const reducer = {
@@ -23,6 +25,8 @@ const reducer = {
   [hireStudentModuleName]: hireStudentReducer,
   [emailEnquiryModuleName]: emailEnquiryReducer,
   [webinarsModuleName]: webinarsReducer,
+  [studentModuleName]: studentReducer,
+  [couponModuleName]: couponReducer,
 }
 
 export default configureStore({

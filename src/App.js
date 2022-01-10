@@ -20,6 +20,8 @@ import ContactUs, { moduleName as ContactUsModuleName } from './modules/contactU
 import HireStudent, { moduleName as HireStudentModuleName } from './modules/hireStudent/pages/index.jsx';
 import EmailEnquiry, { moduleName as EmailEnquiryModuleName } from './modules/emailEnquiry/pages/index.jsx';
 import Webinars, { moduleName as WebinarsModuleName } from './modules/webinars/pages/index.jsx';
+import Student, { moduleName as StudentModuleName } from './modules/student/pages/index.jsx';
+import Coupon, { moduleName as CouponModuleName } from './modules/coupon/pages/index.jsx';
 
 import {
   ListCoursePage,
@@ -102,6 +104,12 @@ const App = () => {
 
         <Route path={`${WebinarsModuleName}`} element={<Webinars />} />
         <Route path={`${WebinarsModuleName}/:keyId`} element={<Webinars />} />
+
+        <Route path={`${StudentModuleName}`} element={<Student />} />
+        <Route path={`${StudentModuleName}/:keyId`} element={<Student />} />
+        
+        <Route path={`${CouponModuleName}`} element={<Coupon />} />
+        <Route path={`${CouponModuleName}/:keyId`} element={<Coupon />} />
 
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
