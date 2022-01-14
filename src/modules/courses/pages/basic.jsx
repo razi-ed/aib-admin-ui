@@ -23,7 +23,7 @@ import {
 } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { capitalize, cloneDeep } from "lodash";
+import { capitalize } from "lodash";
 
 import LoadingSpinner from "../../common/components/loading-spinner";
 
