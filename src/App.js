@@ -10,27 +10,28 @@ import {
 
 import AuthLayout from './modules/auth/components/auth-layout';
 import LoginPage from './modules/auth/pages/login';
+import Layout from './modules/common/components/layout';
+import Users from './modules/users/pages/users';
+import Categories, { moduleName as CategoryModuleName } from './modules/categories/pages/index.jsx';
+import Authors, { moduleName as AuthorsModuleName } from './modules/authors/pages/index.jsx';
+import Coaches, { moduleName as CoachesModuleName } from './modules/coaches/pages/index.jsx';
 
-import Layout from "./modules/common/components/layout";
-import Users from "./modules/users/pages/users";
-import Categories, {
-  moduleName as CategoryModuleName,
-} from "./modules/categories/pages/index.jsx";
-import Authors, {
-  moduleName as AuthorsModuleName,
-} from "./modules/authors/pages/index.jsx";
-import Coaches, {
-  moduleName as CoachesModuleName,
-} from "./modules/coaches/pages/index.jsx";
+import ContactUs, { moduleName as ContactUsModuleName } from './modules/contactUs/pages/index.jsx';
+import HireStudent, { moduleName as HireStudentModuleName } from './modules/hireStudent/pages/index.jsx';
+import EmailEnquiry, { moduleName as EmailEnquiryModuleName } from './modules/emailEnquiry/pages/index.jsx';
+import Webinars, { moduleName as WebinarsModuleName } from './modules/webinars/pages/index.jsx';
+import Student, { moduleName as StudentModuleName } from './modules/student/pages/index.jsx';
+import Coupon, { moduleName as CouponModuleName } from './modules/coupon/pages/index.jsx';
+
 import {
   ListCoursePage,
-  UpsertCoursePage,
   UpsertCourseBasicDetailsPage,
+  UpsertCourseBatchDetailsPage,
+  UpsertCourseModulesDetailsPage,
   moduleName as CourseModuleName,
 } from "./modules/courses/pages";
 
 import "./App.css";
-import CreateCourceContainer from "./modules/courses/pages/CreateSourceContainer";
 
 const App = () => {
   // const navigate = useNavigate();
@@ -38,6 +39,7 @@ const App = () => {
   const currentUser = useSelector((store) => store.auth.user);
 
   if (!currentUser.id && location.pathname.includes("portal")) {
+    console.log({currentUser, path: location.pathname});
     return <Navigate to="/auth/login" state={{ from: location }} />;
   }
 
@@ -64,27 +66,57 @@ const App = () => {
         <Route path={`${CourseModuleName}/list`} element={<ListCoursePage />} />
         <Route
           path={`${CourseModuleName}/create`}
-          element={<CreateCourceContainer />}
+          element={<UpsertCourseBasicDetailsPage />}
         />
         <Route
           path={`${CourseModuleName}/basic/:courseId`}
           element={<UpsertCourseBasicDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/batch/:courseId`}
-          element={<UpsertCoursePage />}
+          path={`${CourseModuleName}/batch/:slug/:courseId`}
+          element={<UpsertCourseBatchDetailsPage />}
+        />
+        
+        <Route
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:moduleType/:sectionId`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/module/:courseId`}
-          element={<UpsertCoursePage />}
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId/:moduleType`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
         <Route
-          path={`${CourseModuleName}/thumbnail/:courseId`}
-          element={<UpsertCoursePage />}
+          path={`${CourseModuleName}/module/:slug/:courseId/:moduleId`}
+          element={<UpsertCourseModulesDetailsPage />}
         />
+        <Route
+          path={`${CourseModuleName}/module/:slug/:courseId`}
+          element={<UpsertCourseModulesDetailsPage />}
+        />
+        <Route path={`${ContactUsModuleName}`} element={<ContactUs />} />
+        <Route path={`${ContactUsModuleName}/:keyId`} element={<ContactUs />} />
+
+        <Route path={`${HireStudentModuleName}`} element={<HireStudent />} />
+        <Route path={`${HireStudentModuleName}/:keyId`} element={<HireStudent />} />
+
+        <Route path={`${EmailEnquiryModuleName}`} element={<EmailEnquiry />} />
+        <Route path={`${EmailEnquiryModuleName}/:keyId`} element={<EmailEnquiry />} />
+
+        <Route path={`${WebinarsModuleName}`} element={<Webinars />} />
+        <Route path={`${WebinarsModuleName}/:keyId`} element={<Webinars />} />
+
+        <Route path={`${StudentModuleName}`} element={<Student />} />
+        <Route path={`${StudentModuleName}/:keyId`} element={<Student />} />
+        
+        <Route path={`${CouponModuleName}`} element={<Coupon />} />
+        <Route path={`${CouponModuleName}/:keyId`} element={<Coupon />} />
 
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<Users />} />
+
+
+
+
         {/*
           Using path="*"" means "match anything", so this route
           acts like a catch-all for URLs that we don't have explicit

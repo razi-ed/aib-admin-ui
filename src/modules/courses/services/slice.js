@@ -5,8 +5,10 @@ import { createApi, deleteApi, getApi, updateApi } from './api';
 
 const initialState = {
   list: [],
+  modules: [],
+  sections: {},
   queryStatus: actionStatuses.IDLE,
-  mutationStatus: actionStatuses.IDLE
+  mutationStatus: actionStatuses.IDLE,
 }
 
 export const getListService = createAsyncThunk(
@@ -30,6 +32,24 @@ export const upsertService = createAsyncThunk(
     }
 );
 
+export const submitCourseService = createAsyncThunk(
+    `${moduleName}/submit`,
+    async (payload, thunkAPI) => {
+        const { [moduleName]: { modules = [], sections = {}} = {} } = await thunkAPI.getState();
+        const data = modules.reduce((acc, module) => {
+          const mData = {
+            moduleId: module.moduleId,
+            sections: sections[module.moduleId]
+          }
+          acc.push(mData);
+          return acc;
+        }, [])
+        let response = {};
+        response = await updateApi({modules: data}, 'module', payload.courseId);
+        return response;
+    }
+);
+
 export const deleteService = createAsyncThunk(
     `${moduleName}/delete`,
     async (id = '') => {
@@ -41,6 +61,48 @@ export const deleteService = createAsyncThunk(
 export const slice = createSlice({
   name: moduleName,
   initialState,
+  reducers: {
+    // standard reducer logic, with auto-generated action types per reducer
+    addModule(state, action) {
+      state.modules.push(action.payload);
+    },
+    removeModule(state, action) {
+      const { moduleId } = action.payload
+      state.modules = 
+        state.modules
+          .filter((module) => module.moduleId !== moduleId);
+    },
+    addSection(state, action) {
+      const { moduleId, sectionData } = action.payload
+      if (!Array.isArray(state.sections[moduleId])) {
+        state.sections[moduleId] = [];
+      }
+      state.sections[moduleId].push(sectionData);
+    },
+    addSectionDetails(state, action) {
+      const { sectionId, moduleId, data } = action.payload;
+      const idx = state.sections[moduleId].findIndex((section)=> {
+        return section.sectionId === sectionId;
+      });
+      state.sections[moduleId][idx] = data;
+    },
+    addProjectModuleDetails(state, action) {
+      const { moduleId, data } = action.payload;
+      const idx = state.modules.findIndex((module)=> {
+        return module.moduleId === moduleId;
+      });
+      state.modules[idx] = {
+        ...state.modules[idx],
+        ...data,
+      };
+    },
+    removeSection(state, action) {
+      const { moduleId, sectionId } = action.payload
+      state.sections[moduleId] = 
+        state.sections[moduleId]
+          .filter((section) => section.sectionId !== sectionId);
+    },
+  },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(upsertService.pending, (state) => {
@@ -72,7 +134,14 @@ export const slice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-// export const {} = authSlice.actions
+export const {
+  addModule,
+  addSection,
+  removeModule,
+  removeSection,
+  addSectionDetails,
+  addProjectModuleDetails,
+} = slice.actions
 
 export default slice.reducer
 

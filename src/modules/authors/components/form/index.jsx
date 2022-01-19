@@ -17,7 +17,6 @@ const validateMessages = {
 export default function ManageForm(props) {
 
   const { defaultValues = {}, options = {}, onCancel, onSubmit, loading } = props
-
   return (
     <Form
         layout="vertical"

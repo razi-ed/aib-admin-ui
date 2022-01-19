@@ -1,0 +1,10 @@
+.user-manage-form-action-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.user-manage-form-action-container > button:last-child {
+    margin-left: 16px;
+}

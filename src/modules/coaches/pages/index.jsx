@@ -34,6 +34,7 @@ export default function UsersPage(params) {
     }, [])
 
     useEffect(() => {
+        console.log(keyId)
         if (Boolean(keyId)) {
             setShowModal(true)
         } else {
