@@ -11,7 +11,6 @@ import "./page.css";
 import LoadingSpinner from "../../common/components/loading-spinner";
 import { actionStatuses } from "../../common/constants/action-status.constants";
 import { getListService, upsertService, deleteService, moduleName } from "../services/slice";
-import { getUsersService } from "../../users/services/user.slice";
 
 export { moduleName }
 
@@ -20,18 +19,16 @@ export default function UsersPage(params) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const list = useSelector(state => state[moduleName].list)
-    const userList = useSelector(state => state.user.list)
     const loading = useSelector(state => state[moduleName].queryStatus === actionStatuses.PENDING)
     const pending = useSelector(state => state[moduleName].mutationStatus === actionStatuses.PENDING)
     console.log(list)
 
     const { keyId = "" } = useParams();
-    
+    console.log({keyId});
     const [showModal, setShowModal] = useState(Boolean(keyId));
 
     useEffect(() => {
         dispatch(getListService());
-        dispatch(getUsersService());
     }, [])
 
     useEffect(() => {
@@ -61,8 +58,9 @@ export default function UsersPage(params) {
     )
 
     const onSubmit = useCallback(
-        ({name, designation}) => {
-            dispatch(upsertService({name, designation, id: keyId}))
+        (data) => {
+            debugger
+            dispatch(upsertService({data, keyId}))
             .unwrap()
             .then((result) => {
                 const { hasErrored = false } = result;
@@ -152,6 +150,18 @@ const columns = useMemo(() => ([
         ellipsis: true,
     },
     {
+        title: 'Zoom Link',
+        dataIndex: 'zoomLink',
+        key: 'zoomLink',
+        ellipsis: true,
+    },
+    {
+        title: 'Youtube Link',
+        dataIndex: 'youTubeLink',
+        key: 'youTubeLink',
+        ellipsis: true,
+    },
+    {
         title: 'Action',
         key: 'action',
         render: (text, record) => (
@@ -207,7 +217,6 @@ const columns = useMemo(() => ([
                         onSubmit={onSubmit}
                         defaultValues={find(list, (obj) => obj.id === keyId) || {}}
                         loading={pending}
-                        options={{userList}}
                     />
                 </Modal> :
                 null

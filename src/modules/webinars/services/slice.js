@@ -20,12 +20,13 @@ export const getListService = createAsyncThunk(
 
 export const upsertService = createAsyncThunk(
     `${moduleName}/upsert`,
-    async ({name, designation, id = null}) => {
+    async ({data, id}) => {
+      debugger
         let response = {};
         if (id) {
-            response = await updateApi({name, designation}, id);
+            response = await updateApi(data, id);
         } else {
-            response = await createApi({name, designation});
+            response = await createApi(data);
         }
         return response;
     }

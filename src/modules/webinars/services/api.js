@@ -22,10 +22,10 @@ export async function getApi() {
     }
 }
 
-export async function createApi({ name, designation }) {
+export async function createApi(data) {
     let response = {}
     try {
-        const apiResponse = await HttpClient.post(`/${moduleName}`, { name, designation });
+        const apiResponse = await HttpClient.post(`/${moduleName}`, data);
         if (apiResponse.status === 201) {
             response = apiResponse.data;
         } else {
