@@ -22,6 +22,7 @@ import {
 import { moduleName as categoryModuleName } from '../../../categories/constants';
 import { moduleName as authorsModuleName } from '../../../authors/constants';
 import { moduleName as coachesModuleName } from '../../../coaches/constants';
+import { moduleName as codingEnablersModuleName } from '../../../coding-enablers/constants';
 import { moduleName as coursesModuleName } from '../../../courses/constants';
 import { moduleName as contactUsModuleName } from '../../../contactUs/constants';
 import { moduleName as hireStudentModuleName } from '../../../hireStudent/constants';
@@ -80,6 +81,9 @@ export default function AppLayout(props) {
           </Menu.Item>
           <Menu.Item key={coachesModuleName} icon={<ContactsOutlined />}>
             <Link to={`/portal/${coachesModuleName}`}>{`${capitalize(coachesModuleName)}`}</Link>
+          </Menu.Item>
+          <Menu.Item key={codingEnablersModuleName} icon={<GroupOutlined />}>
+            <Link to={`/portal/${codingEnablersModuleName}`}>{`${capitalize(replace(codingEnablersModuleName, '-', ' '))}`}</Link>
           </Menu.Item>
           <Menu.Item key={categoryModuleName} icon={<TagOutlined />}>
             <Link to={`/portal/${categoryModuleName}`}>{`${capitalize(categoryModuleName)}`}</Link>

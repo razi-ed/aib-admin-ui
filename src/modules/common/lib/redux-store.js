@@ -12,6 +12,7 @@ import emailEnquiryReducer, { moduleName as emailEnquiryModuleName } from '../..
 import webinarsReducer, { moduleName as webinarsModuleName } from '../../webinars/services/slice';
 import studentReducer, { moduleName as studentModuleName } from '../../student/services/slice';
 import couponReducer, { moduleName as couponModuleName } from '../../coupon/services/slice';
+import codingEnablersReducer, { moduleName as codingEnablersModuleName } from '../../coding-enablers/services/slice';
 
 
 const reducer = {
@@ -20,6 +21,7 @@ const reducer = {
   [categoriesModuleName]: categoryReducer,
   [authorsModuleName]: authorReducer,
   [coachModuleName]: coachReducer,
+  [coachModuleName]: coachReducer,
   [courseModuleName]: courseReducer,
   [contactUssModuleName]: contactUsReducer,
   [hireStudentModuleName]: hireStudentReducer,
@@ -27,6 +29,7 @@ const reducer = {
   [webinarsModuleName]: webinarsReducer,
   [studentModuleName]: studentReducer,
   [couponModuleName]: couponReducer,
+  [codingEnablersModuleName]: codingEnablersReducer,
 }
 
 export default configureStore({

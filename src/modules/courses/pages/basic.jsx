@@ -91,15 +91,23 @@ export function UpsertCourseBasicDetailsPage() {
   const pending = useSelector(
     (state) => state[moduleName].mutationStatus === actionStatuses.PENDING
   );
+  const courseList = useSelector(
+    (state) => state[moduleName].list
+  );
 
   useEffect(() => {
     dispatch(getAuthors());
-    dispatch(getCategoriesService());
   }, []);
 
   function handleSaveAndNext() {
     formRef.current.submit()
   }
+
+  const courseData = useMemo(() => {
+    if (courseId && Array.isArray(courseList) && courseList.length > 0) {
+      return courseList
+    }
+  }, [courseList, courseId]);
 
   const onSubmit = useCallback(
     async (payload) => {

@@ -15,6 +15,7 @@ import Users from './modules/users/pages/users';
 import Categories, { moduleName as CategoryModuleName } from './modules/categories/pages/index.jsx';
 import Authors, { moduleName as AuthorsModuleName } from './modules/authors/pages/index.jsx';
 import Coaches, { moduleName as CoachesModuleName } from './modules/coaches/pages/index.jsx';
+import CodingEnablers, { moduleName as CodingEnablersModuleName } from './modules/coding-enablers/pages/index.jsx';
 
 import ContactUs, { moduleName as ContactUsModuleName } from './modules/contactUs/pages/index.jsx';
 import HireStudent, { moduleName as HireStudentModuleName } from './modules/hireStudent/pages/index.jsx';
@@ -62,6 +63,9 @@ const App = () => {
 
         <Route path={`${CoachesModuleName}`} element={<Coaches />} />
         <Route path={`${CoachesModuleName}/:keyId`} element={<Coaches />} />
+
+        <Route path={`${CodingEnablersModuleName}`} element={<CodingEnablers />} />
+        <Route path={`${CodingEnablersModuleName}/:keyId`} element={<CodingEnablers />} />
 
         <Route path={`${CourseModuleName}/list`} element={<ListCoursePage />} />
         <Route
