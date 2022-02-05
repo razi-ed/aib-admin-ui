@@ -1,6 +1,6 @@
-import { useCallback, useState, } from 'react';
+import { useCallback, useEffect, useState, } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Form, Input, InputNumber, message, Radio, Row, Upload } from 'antd';
+import { Button, Checkbox, Form, Input, InputNumber, message, Radio, Row, Upload } from 'antd';
 
 import { videoFileUploader } from '../../../common/lib/asset-utils';
 import { PlusOutlined } from '@ant-design/icons';
@@ -14,8 +14,9 @@ const uploadButton = (
     </div>
 );
 
-export default function VideoSectionForm(params) {
+export default function VideoSectionForm(props) {
     const { slug = '', courseId = '', moduleId = '', sectionId = '' } = useParams();
+    const { details } = props;
     const dispatch = useDispatch();
 
     const [videoUrl, setVideoUrl] = useState();
@@ -25,7 +26,7 @@ export default function VideoSectionForm(params) {
         const key = 'SAVING';
         message.loading({ content: 'Saving...', key });
         const data = {
-            sectionContentUrl: videoUrl,
+            sectionContentUrl: payload.sectionContentUrl ? payload.sectionContentUrl : videoUrl,
             sectionType: 'VIDEO',
             sectionId,
             ...payload,
@@ -33,6 +34,16 @@ export default function VideoSectionForm(params) {
         await dispatch(addSectionDetails({ sectionId, moduleId, data }));
         message.success({ content: 'Saved!', key, duration: 2 });
     }, [videoUrl, sectionId, moduleId]);
+
+    useEffect(() => {
+        if (details.sectionContentUrl) {
+            setVideoUrl(details.sectionContentUrl)
+        }
+    }, [details.sectionContentUrl])
+
+    const onUrlAdd = useCallback(() => {
+        setVideoUrl()
+    }, []);
 
     const videoUploadPreHook = useCallback(
         async (file) => {
@@ -72,27 +83,37 @@ export default function VideoSectionForm(params) {
                     name={"sectionTitle"}
                     label="Title"
                     rules={[{ required: true }]}
+                    initialValue={details.sectionTitle}
                 >
                     <Input />
                 </Form.Item>
                 <Row align="bottom">
                     <Form.Item
-                        name={"durationValue"}
+                        name={"sectionDurationValue"}
                         label="duration"
                         rules={[{ type: "number", min: 1, max: 999, required: true }]}
                         style={{ width: '50%' }}
+                        initialValue={details.sectionDurationValue}
                     >
                         <InputNumber style={{ width: '90%' }} />
                     </Form.Item>
                     <Form.Item
-                        name="durationType"
+                        name="sectionDurationType"
                         rules={[{ required: true, message: "Please pick an item!" }]}
+                        initialValue={details.sectionDurationType}
                     >
                         <Radio.Group>
                             <Radio.Button key='MINUTES' value="MINUTES">Minutes</Radio.Button>
                             <Radio.Button key='HOURS' value="HOURS">Hours</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
+                </Row>
+                <Row>
+                <Form.Item>
+                    <Form.Item name="addToTask" valuePropName="checked" noStyle>
+                    <Checkbox>Add to preview</Checkbox>
+                    </Form.Item>
+                </Form.Item>
                 </Row>
                 <Row>
                     <Upload
@@ -108,6 +129,14 @@ export default function VideoSectionForm(params) {
                     >
                         {videoUrl ? <video src={videoUrl} alt="avatar" style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%' }} /> : uploadButton}
                     </Upload>
+                </Row>
+                <Row>
+                    <Form.Item
+                        name={"sectionContentUrl"}
+                        label="YouTube URL"
+                    >
+                        <Input />
+                    </Form.Item>
                 </Row>
                 {/* <Row>
                     <Col span={8} className="basic-details-vertical-section">

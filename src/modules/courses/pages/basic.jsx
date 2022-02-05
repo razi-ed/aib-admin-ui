@@ -32,6 +32,7 @@ import {
   upsertService,
   deleteService,
   moduleName,
+  getByIdService,
 } from "../services/slice";
 import { getListService as getAuthors } from "../../authors/services/slice";
 import { getListService as getCategoriesService } from "../../categories/services/slice";
@@ -84,7 +85,7 @@ export function UpsertCourseBasicDetailsPage() {
   const formRef = useRef(null);
 
   const authorList = useSelector((state) => state.author.list);
-  const categories = useSelector((state) => state.category.list);
+  const courseData = useSelector((state) => state.course.course);
   const loading = useSelector(
     (state) => state[moduleName].queryStatus === actionStatuses.PENDING
   );
@@ -97,17 +98,24 @@ export function UpsertCourseBasicDetailsPage() {
 
   useEffect(() => {
     dispatch(getAuthors());
+    dispatch(getByIdService(courseId));
   }, []);
+
+  useEffect(() => {
+    if (courseData.thumbnailUrl) {
+      setImageUrl(courseData.thumbnailUrl);
+    }
+  }, [courseData.thumbnailUrl]);
 
   function handleSaveAndNext() {
     formRef.current.submit()
   }
 
-  const courseData = useMemo(() => {
-    if (courseId && Array.isArray(courseList) && courseList.length > 0) {
-      return courseList
-    }
-  }, [courseList, courseId]);
+  // const courseData = useMemo(() => {
+  //   if (courseId && Array.isArray(courseList) && courseList.length > 0) {
+  //     return courseList
+  //   }
+  // }, [courseList, courseId]);
 
   const onSubmit = useCallback(
     async (payload) => {
@@ -130,25 +138,26 @@ export function UpsertCourseBasicDetailsPage() {
           return;
       }
       const { id, slug } = upsertResponse;
-      const file = dataURLtoFile(imageUrl, `${slug}-thumbnail`);
-      const imageUploadResponse = await imageFileUploader({file, fileName: `${slug}-thumbnail`, folder: `courses/${slug}/images`}, {});
-      const { secure_url: thumbnailUrl } = imageUploadResponse;
-      console.log({imageUploadResponse})
-      const updateResponse = await dispatch(upsertService({payload: { thumbnailUrl }, id, step: 'thumbnail'})).unwrap()
-      if (hasErrored) {
-        notification.error({
-            placement: 'topRight',
-            message: `${courseId ? 'Updation' : 'Creation'} failed`,
-            description: `${capitalize(moduleName)} ${courseId ? 'updation' : 'creation'} has failed`,
-            duration: 3
-        })
-        return;
+      if(courseData.thumbnailUrl !== imageUrl) {
+        const file = dataURLtoFile(imageUrl, `${slug}-thumbnail`);
+        const imageUploadResponse = await imageFileUploader({file, fileName: `${slug}-thumbnail`, folder: `courses/${slug}/images`}, {});
+        const { secure_url: thumbnailUrl } = imageUploadResponse;
+        console.log({imageUploadResponse})
+        const updateResponse = await dispatch(upsertService({payload: { thumbnailUrl }, id, step: 'thumbnail'})).unwrap()
+        if (hasErrored) {
+          notification.error({
+              placement: 'topRight',
+              message: `${courseId ? 'Updation' : 'Creation'} failed`,
+              description: `${capitalize(moduleName)} ${courseId ? 'updation' : 'creation'} has failed`,
+              duration: 3
+          })
+          return;
+        }
       }
-      const { id: updatedCourseId } = updateResponse;
       message.success({ content: 'Saved!', key: msgKey, duration: 2 });
-      navigate(`/portal/course/batch/${slug}/${updatedCourseId}`);
+      navigate(`/portal/course/batch/${slug}/${id}`);
     },
-    [courseId, imageUrl]
+    [courseId, imageUrl, courseData.thumbnailUrl]
   );
 
   const imageFilePreUploadhook = useCallback((file)=> {
@@ -172,6 +181,10 @@ export function UpsertCourseBasicDetailsPage() {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+
+  if (courseId && loading) {
+    return 'Loading...'
+  }
 
   return (
     <>
@@ -211,6 +224,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"title"}
                 label="Course Title"
                 rules={[{ required: true }]}
+                initialValue={courseData.title}
               >
                 <Input />
               </Form.Item>
@@ -218,6 +232,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"description"}
                 label="Short Description"
                 rules={[{ required: true }]}
+                initialValue={courseData.description}
               >
                 <Input.TextArea rows={5} />
               </Form.Item>
@@ -225,6 +240,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"author"}
                 label="Author"
                 rules={[{ required: true }]}
+                initialValue={courseData.author}
               >
                 <Select>
                   {authorList.length > 0
@@ -241,12 +257,15 @@ export function UpsertCourseBasicDetailsPage() {
                   name={"durationValue"}
                   label="duration"
                   rules={[{ type: "number", min: 1, max: 999, required: true }]}
+                  initialValue={courseData.durationValue}
                 >
                   <InputNumber />
                 </Form.Item>
                 <Form.Item
                   name="durationType"
                   rules={[{ required: true, message: "Please pick an item!" }]}
+                  
+                  initialValue={courseData.durationType}
                 >
                   <Radio.Group>
                     <Radio.Button value="HOURS">Hours</Radio.Button>
@@ -262,6 +281,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name="courseType"
                 rules={[{ required: true, message: "Please pick an item!" }]}
                 label="Type"
+                initialValue={courseData.courseType}
               >
                 <Radio.Group>
                   <Radio.Button value="FREE">Free</Radio.Button>
@@ -273,6 +293,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"brilliancePoints"}
                 label="Brilliance Points"
                 rules={[{ type: "number", min: 0, max: 9999, required: false }]}
+                initialValue={courseData.brilliancePoints}
               >
                 <InputNumber />
               </Form.Item>
@@ -281,6 +302,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"sellingPrice"}
                 label="Selling Price"
                 rules={[{ type: "number", min: 0, max: 99999, required: true }]}
+                initialValue={courseData.sellingPrice}
               >
                 <InputNumber />
               </Form.Item>
@@ -289,6 +311,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name={"discountedPrice"}
                 label="Discounted Price"
                 rules={[{ type: "number", min: 0, max: 99999, required: true }]}
+                initialValue={courseData.discountedPrice}
               >
                 <InputNumber />
               </Form.Item>

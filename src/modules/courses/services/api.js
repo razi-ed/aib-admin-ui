@@ -22,6 +22,26 @@ export async function getApi() {
     }
 }
 
+export async function getByIdApi(id) {
+    let response = {}
+    try {
+        const apiResponse = await HttpClient.get(`/${moduleName}/${id}`);
+        if (apiResponse.status === 200) {
+            const { data = {} } = apiResponse;
+            response = { results: data };
+        }
+    } catch (error) {
+        errorLog(`get-${moduleName}-by-id-api`, error)
+        response = {
+            hasErrored: true,
+            errorMessage: error.message,
+            error,
+        }
+    } finally {
+        return response;
+    }
+}
+
 export async function createApi(data) {
     let response = {}
     try {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Col, Row, Select, Steps, Tooltip, Typography, notification } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,8 @@ import { v4 as secureUuid } from '@lukeed/uuid/secure';
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import ModuleSectionDetailsDFormContainer from "../components/module-section-details-forms";
+import { getListService as getCodingEnablersService } from "../../coding-enablers/services/slice";
+import { getByIdService } from "../services/slice";
 
 import "./page.css";
 
@@ -25,8 +27,17 @@ export function UpsertCourseModulesDetailsPage(params) {
 
     const modules = useSelector(state => state[moduleName].modules)
     const sections = useSelector(state => state[moduleName].sections && state[moduleName].sections[moduleId] ? state[moduleName].sections[moduleId] : []);
+    const courseData = useSelector(state => state[moduleName].course)
+    const sectionsMap = useSelector(state => state[moduleName].section)
 
     const [sectionType, setSectionType] = useState();
+
+    useEffect(() => {
+        dispatch(getCodingEnablersService());
+        if (!(courseData && courseData.title)) {
+          dispatch(getByIdService(courseId));
+        }
+    }, []);
 
     const onModuleAdd = useCallback(() => {
         const payload = {

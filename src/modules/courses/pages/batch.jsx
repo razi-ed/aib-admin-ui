@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Moment from "moment";
 import {
   Form,
   Input,
@@ -37,6 +38,7 @@ import {
 } from "../services/slice";
 import { getListService as getCategoriesService } from "../../categories/services/slice";
 import { imageFileUploader } from "../../common/lib/asset-utils";
+import { getByIdService } from "../services/slice";
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -53,8 +55,10 @@ const validateMessages = {
 export function UpsertCourseBatchDetailsPage(params) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const courseData = useSelector((state) => state.course.course);
+  
   const { courseId = "", slug = '' } = useParams();
-  const [batchCount, setBatchCount] = useState(1);
+  const [batchCount, setBatchCount] = useState(courseData.totalBatches || 1);
   const [detailImageUrl, setDetailImageUrl] = useState();
   const [detailImageFile, setDetailImageFile] = useState();
   const [overviewImageUrl, setOverviewImageUrl] = useState();
@@ -65,16 +69,31 @@ export function UpsertCourseBatchDetailsPage(params) {
 
   // const userList = useSelector((state) => state.user.list);
   const categories = useSelector((state) => state.category.list);
-  // const loading = useSelector(
-  //   (state) => state[moduleName].queryStatus === actionStatuses.PENDING
-  // );
-  // const pending = useSelector(
-  //   (state) => state[moduleName].mutationStatus === actionStatuses.PENDING
-  // );
+  const loading = useSelector(
+    (state) => state[moduleName].queryStatus === actionStatuses.PENDING
+  );
+  const pending = useSelector(
+    (state) => state[moduleName].mutationStatus === actionStatuses.PENDING
+  );
 
   useEffect(() => {
     dispatch(getCategoriesService());
+    if (!(courseData && courseData.title)) {
+      dispatch(getByIdService(courseId));
+    }
   }, []);
+
+  useEffect(() => {
+    if (courseData.detailImageUrl) {
+      setDetailImageUrl(courseData.detailImageUrl);
+    }
+  }, [courseData.detailImageUrl]);
+
+  useEffect(() => {
+    if (courseData.overviewImageUrl) {
+      setOverviewImageUrl(courseData.overviewImageUrl);
+    }
+  }, [courseData.overviewImageUrl]);
 
   function handleSaveAndNext() {
     formRef.current.submit()
@@ -161,11 +180,12 @@ export function UpsertCourseBatchDetailsPage(params) {
     return false;
   }, [slug]);
 
-  const datePickerForBatch = useCallback(() => {
+  const datePickerForBatch = () => {
     const getDatePicker = (index) => (
       <Form.Item
         name={["batchDates", index]}
         label={`Batch 0${index + 1}`}
+        key={`Batch 0${index + 1}`}
         rules={[
           {
             type: "object",
@@ -173,6 +193,7 @@ export function UpsertCourseBatchDetailsPage(params) {
             message: "Please select date!",
           },
         ]}
+        initialValue={Array.isArray(courseData.batchDates) ? Moment(courseData.batchDates[index]) : undefined}
       >
         <DatePicker />
       </Form.Item>
@@ -180,10 +201,9 @@ export function UpsertCourseBatchDetailsPage(params) {
     let requiredDatePickers = [];
     for (let index = 0; index < batchCount; index++) {
       requiredDatePickers[index] = getDatePicker(index);
-      
     }
     return requiredDatePickers;
-  }, [batchCount]);
+  }
 
   const uploadButton = (
     <div>
@@ -249,6 +269,7 @@ export function UpsertCourseBatchDetailsPage(params) {
                 name={"domain"}
                 label="Main Domain"
                 rules={[{ required: true }]}
+                initialValue={courseData.domain}
               >
                 <Select>
                   {categories.length > 0
@@ -260,12 +281,14 @@ export function UpsertCourseBatchDetailsPage(params) {
                     : null}
                 </Select>
               </Form.Item>
-              <Form.Item name={"filters"} label="Advanced Filters">
+              <Form.Item name={"filters"} label="Advanced Filters" 
+                initialValue={courseData.filters}>
                 <Select mode="tags" />
               </Form.Item>
               <Form.Item
                 name={"concepts"}
                 label="You'll Learn/Concepts Covered"
+                initialValue={courseData.concepts}
               >
                 <Select mode="tags" />
               </Form.Item>

@@ -72,23 +72,25 @@ export default function LiveSectionForm(params) {
                 </Form.Item>
                 <Row align="bottom">
                     <Form.Item
-                        name={"durationValue"}
+                        name={"sectionDurationValue"}
                         label="duration"
                         rules={[{ type: "number", min: 1, max: 999, required: true }]}
-                        style={{width: '50%'}}
+                        style={{ width: '50%' }}
+                        // initialValue={details.sectionDurationValue}
                     >
-                        <InputNumber style={{width: '90%'}}/>
+                        <InputNumber style={{ width: '90%' }} />
                     </Form.Item>
                     <Form.Item
-                        name="durationType"
+                        name="sectionDurationType"
                         rules={[{ required: true, message: "Please pick an item!" }]}
+                        // initialValue={details.sectionDurationType}
                     >
                         <Radio.Group>
                             <Radio.Button key='MINUTES' value="MINUTES">Minutes</Radio.Button>
                             <Radio.Button key='HOURS' value="HOURS">Hours</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
-              </Row>
+                </Row>
               <Form.Item
                     name={"sectionLiveUrl"}
                     label="Link to Join the meeting"

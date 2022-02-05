@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { actionStatuses } from '../../../modules/common/constants/action-status.constants';
 import { moduleName } from '../constants';
-import { createApi, deleteApi, getApi, updateApi } from './api';
+import { createApi, deleteApi, getApi, updateApi, getByIdApi } from './api';
 
 const initialState = {
   list: [],
   modules: [],
   sections: {},
+  course: {},
   queryStatus: actionStatuses.IDLE,
   mutationStatus: actionStatuses.IDLE,
 }
@@ -15,6 +16,14 @@ export const getListService = createAsyncThunk(
     `${moduleName}/getList`,
     async () => {
         const response = await getApi();
+        return response;
+    }
+);
+
+export const getByIdService = createAsyncThunk(
+    `${moduleName}/getById`,
+    async (id) => {
+        const response = await getByIdApi(id);
         return response;
     }
 );
@@ -127,6 +136,32 @@ export const slice = createSlice({
         state.list = [];
       } else {
         state.list = results;
+        state.queryStatus = actionStatuses.FULFILLED;
+      }
+    })
+    builder.addCase(getByIdService.pending, (state) => {
+      state.queryStatus = actionStatuses.PENDING;
+      state.course = {};
+    })
+    builder.addCase(getByIdService.fulfilled, (state, action) => {
+      const { results, hasErrored = false } = action.payload;
+      if (hasErrored) {
+        state.queryStatus = actionStatuses.REJECTED;
+        state.course = [];
+      } else {
+        const course = Object.assign({}, results);
+        state.course = course;
+        let modulesSectionsObj = {modules: [], sections: {}};
+        if (Array.isArray(course.modules) && course.modules.length > 0) {
+          modulesSectionsObj = course.modules.reduce((acc, curr) => {
+            const {sections, ...moduleDetails} = curr;
+            acc.modules.push(moduleDetails);
+            acc.sections[moduleDetails.moduleId] = sections;
+            return acc;
+          }, modulesSectionsObj);
+        }
+        state.modules = modulesSectionsObj.modules;
+        state.sections = modulesSectionsObj.sections;
         state.queryStatus = actionStatuses.FULFILLED;
       }
     })
