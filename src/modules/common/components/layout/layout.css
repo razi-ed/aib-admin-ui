@@ -20,6 +20,7 @@
     background: #fff;
     margin: 24px 16px;
     padding: 24px;
+    overflow-y: clip;
 }
 
 .site-layout .site-layout-background {

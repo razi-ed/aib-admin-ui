@@ -58,7 +58,7 @@ export function UpsertCourseBatchDetailsPage(params) {
   const courseData = useSelector((state) => state.course.course);
   
   const { courseId = "", slug = '' } = useParams();
-  const [batchCount, setBatchCount] = useState(courseData.totalBatches || 1);
+  const [batchCount, setBatchCount] = useState(courseData.totalBatches || 0);
   const [detailImageUrl, setDetailImageUrl] = useState();
   const [detailImageFile, setDetailImageFile] = useState();
   const [overviewImageUrl, setOverviewImageUrl] = useState();
@@ -189,7 +189,7 @@ export function UpsertCourseBatchDetailsPage(params) {
         rules={[
           {
             type: "object",
-            required: true,
+            required: false,
             message: "Please select date!",
           },
         ]}
@@ -249,14 +249,14 @@ export function UpsertCourseBatchDetailsPage(params) {
               <Form.Item
                 name={"totalBatches"}
                 label="No' of Batches"
-                rules={[{ type: "number", min: 1, max: 4}]}
+                rules={[{ type: "number", min: 0, max: 4}]}
                 getValueFromEvent={() => batchCount}
               >
                 <InputNumber
                   onChange={setBatchCount}
                   defaultValue={batchCount}
                   max={4}
-                  min={1}
+                  min={0}
                 />
                 <div>Maximum 4 Batches</div>
               </Form.Item>

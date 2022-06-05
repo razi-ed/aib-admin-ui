@@ -281,7 +281,7 @@ export function UpsertCourseBasicDetailsPage() {
                 name="courseType"
                 rules={[{ required: true, message: "Please pick an item!" }]}
                 label="Type"
-                initialValue={courseData.courseType}
+                initialValue={courseData.courseType || 'FREE'}
               >
                 <Radio.Group>
                   <Radio.Button value="FREE">Free</Radio.Button>
@@ -295,25 +295,26 @@ export function UpsertCourseBasicDetailsPage() {
                 rules={[{ type: "number", min: 0, max: 9999, required: false }]}
                 initialValue={courseData.brilliancePoints}
               >
-                <InputNumber />
+                <InputNumber disabled/>
               </Form.Item>
 
               <Form.Item
                 name={"sellingPrice"}
                 label="Selling Price"
-                rules={[{ type: "number", min: 0, max: 99999, required: true }]}
+                rules={[{ type: "number", min: 0, max: 99999, required: false }]}
+                
                 initialValue={courseData.sellingPrice}
               >
-                <InputNumber />
+                <InputNumber disabled/>
               </Form.Item>
 
               <Form.Item
                 name={"discountedPrice"}
                 label="Discounted Price"
-                rules={[{ type: "number", min: 0, max: 99999, required: true }]}
+                rules={[{ type: "number", min: 0, max: 99999, required: false }]}
                 initialValue={courseData.discountedPrice}
               >
-                <InputNumber />
+                <InputNumber disabled/>
               </Form.Item>
             </Col>
             <Col className="basic-details-vertical-section" span={8}>
