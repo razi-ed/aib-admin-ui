@@ -21,10 +21,10 @@ export async function getUsersApi() {
     }
 }
 
-export async function createUserApi({ email, name }) {
+export async function createUserApi({ email, name, phone, imageUrl }) {
     let response = {}
     try {
-        const apiResponse = await HttpClient.post('/users', { email, name }, );
+        const apiResponse = await HttpClient.post('/users', { email, name, phone, imageUrl }, );
         if (apiResponse.status === 201) {
             response = apiResponse.data;
         } else {

@@ -61,6 +61,9 @@ export default function UsersPage(params) {
                 if (userObj.email === values.email) {
                     delete values.email;
                 }
+                if (userObj.phone === values.phone) {
+                    delete values.phone;
+                }
             }
             dispatch(upsertUserService({...values, id: userId}))
             .unwrap()
@@ -182,23 +185,6 @@ const columns = useMemo(() => ([
     },
 ]), []);
 
-const data = [
-    {
-      id: '1',
-      name: 'John Brown',
-      email: 'test@tmail.tom',
-    },
-    {
-      id: '2',
-      name: 'Jim Green',
-      email: 'test@tmail.tom',
-    },
-    {
-      id: '3',
-      name: 'Joe Black',
-      email: 'test@tmail.tom',
-    },
-  ];
 
     if (userListLoading) {
         return (

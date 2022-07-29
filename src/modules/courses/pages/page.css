@@ -148,3 +148,14 @@
   background-color: #424C5A;
   border-radius: 7px;
 }
+
+.module-name-list-item {
+  width: 100%;
+}
+
+.module-name-list-item > h4 {
+  max-width: calc(100% - 44px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

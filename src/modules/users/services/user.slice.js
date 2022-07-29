@@ -20,15 +20,15 @@ export const getUsersService = createAsyncThunk(
 
 export const upsertUserService = createAsyncThunk(
     'user/upsert',
-    async ({name, email, id = null}) => {
+    async ({name, email, id = null, phone, imageUrl}) => {
         let response = {};
         if (id) {
             response = await updateUserApi(
-                pickBy({name, email}, (value) => !!value),
+                pickBy({name, email, phone, imageUrl}, (value) => !!value),
                 id
             );
         } else {
-            response = await createUserApi({name, email});
+            response = await createUserApi({name, email, phone, imageUrl});
         }
         return response;
     }

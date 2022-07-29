@@ -111,6 +111,9 @@ export function UpsertCourseModulesDetailsPage(params) {
         const list = modules.map((module, idx) => {
             const { moduleTitle, moduleIndex } = module;
             const isSelected = moduleId === module.moduleId;
+            const moduleName = module.moduleType === 'PROJECT' ?
+            (`PROJECT ${idx+1}`) :
+            (moduleTitle || `Module ${idx+1}`)
             return(
                 <li 
                     key={module.moduleId}
@@ -120,13 +123,13 @@ export function UpsertCourseModulesDetailsPage(params) {
                         }
                     }}
                     data-selected={isSelected ? 'yes' : 'no'}
+                    className="module-name-list-item"
+                    title={moduleName}
                 >
                     <Typography.Title level={4} >
                         
                         {
-                            module.moduleType === 'PROJECT' ?
-                                `PROJECT ${idx+1}` :
-                                `Module ${idx+1}`
+                            moduleName
                         }
                     </Typography.Title>
                     <Tooltip title="delete">
@@ -212,6 +215,11 @@ export function UpsertCourseModulesDetailsPage(params) {
                     <Select.Option key={'PROJECT'}>
                         {'Project'}
                     </Select.Option>
+                    
+                    <Select.Option key={'PYNB'}>
+                        {'Python NoteBook'}
+                    </Select.Option>
+                    
                 </Select>
                 <Button disabled={!sectionType || !moduleId || moduleType === 'PROJECT'} icon={<PlusOutlined />} onClick={onAddSection} type="primary">
                     Add Section
@@ -247,15 +255,15 @@ export function UpsertCourseModulesDetailsPage(params) {
             justify="space-between"
             className="upsert-course-modules-main-section"
         >
-            <Col span={4} className="upsert-course-modules-modules list-holder">
+            <Col span={5} className="upsert-course-modules-modules list-holder">
                 {renderModulesList()}
                 {renderAddModuleForm()}
             </Col>
-            <Col span={4} className="upsert-course-modules-sections list-holder">
+            <Col span={5} className="upsert-course-modules-sections list-holder">
                 {renderSectionsList()}
                 {renderAddSectionForm()}
             </Col>
-            <Col span={16} className="upsert-course-modules-main">
+            <Col span={14} className="upsert-course-modules-main">
                 <ModuleSectionDetailsDFormContainer
                     section={sections.find((s) => s.sectionId === sectionId) || {}}
                 />

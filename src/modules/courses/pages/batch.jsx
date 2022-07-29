@@ -22,7 +22,7 @@ import {
   Alert,
   message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { find, capitalize } from "lodash";
@@ -37,7 +37,7 @@ import {
   moduleName,
 } from "../services/slice";
 import { getListService as getCategoriesService } from "../../categories/services/slice";
-import { imageFileUploader } from "../../common/lib/asset-utils";
+import { imageFileUploader, videoFileUploader } from "../../common/lib/asset-utils";
 import { getByIdService } from "../services/slice";
 
 /* eslint-disable no-template-curly-in-string */
@@ -64,7 +64,17 @@ export function UpsertCourseBatchDetailsPage(params) {
   const [overviewImageUrl, setOverviewImageUrl] = useState();
   const [overviewImageFile, setOverviewImageFile] = useState();
   const [overviewVideoUrl, setOverviewVideoUrl] = useState();
-  const [overviewVideoFile, setOverviewVideoFile] = useState();
+  const [overviewVideoFile, setOverviewVideoFile] = useState(() => {
+    if (courseData.overviewVideoUrl) {
+      return {
+        uid: '-1',
+        name: `${slug}-overview-video`,
+        status: 'done',
+        url: courseData.overviewVideoUrl,
+      }
+    }
+    return {};
+  });
   const formRef = useRef(null);
 
   // const userList = useSelector((state) => state.user.list);
@@ -90,10 +100,10 @@ export function UpsertCourseBatchDetailsPage(params) {
   }, [courseData.detailImageUrl]);
 
   useEffect(() => {
-    if (courseData.overviewImageUrl) {
-      setOverviewImageUrl(courseData.overviewImageUrl);
+    if (courseData.overviewVideoUrl) {
+      setOverviewVideoUrl(courseData.overviewVideoUrl);
     }
-  }, [courseData.overviewImageUrl]);
+  }, [courseData.overviewVideoUrl]);
 
   function handleSaveAndNext() {
     formRef.current.submit()
@@ -102,17 +112,22 @@ export function UpsertCourseBatchDetailsPage(params) {
   const onSubmit = useCallback(
     async (payload) => {
       // console.log(payload);
-      if(!(detailImageUrl && overviewImageUrl)) {
-        message.error('Upload thumbnails!');
+      if(!detailImageUrl) {
+        message.error('Upload Detail Image!');
         return
       }
-      const batchDates = payload.batchDates.map((mDate) => mDate.toISOString())
+      if(!overviewVideoUrl) {
+        message.error('Upload Overview Video!');
+        return
+      }
       payload = {
         ...payload,
         detailImageUrl,
-        overviewImageUrl,
+        overviewVideoUrl,
         totalBatches: batchCount,
-        batchDates,
+      }
+      if (payload.batchDates) {
+        payload.batchDates = payload.batchDates.map((mDate) => mDate.toISOString());
       }
       delete payload.overviewVideoThumbnailUrl;
       delete payload.detailThumbnailUrl;
@@ -131,7 +146,7 @@ export function UpsertCourseBatchDetailsPage(params) {
       const { id, slug: courseSlug } = upsertResponse;
       navigate(`/portal/course/module/${courseSlug}/${id}/0/0`);
     },
-    [courseId, detailImageUrl, overviewImageUrl, batchCount]
+    [courseId, detailImageUrl, overviewVideoUrl, batchCount]
   );
 
   const detailedThumbUrlPreUploadhook = useCallback(async (file)=> {
@@ -158,24 +173,29 @@ export function UpsertCourseBatchDetailsPage(params) {
   }, [slug]);
 
   const overviewVideoThumbUrlPreUploadhook = useCallback(async (file)=> {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+    // if (!isJpgOrPng) {
+    //   message.error('You can only upload JPG/PNG file!');
+    // }
+    const isLt2M = file.size / 1024 / 1024 < 15;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
+      message.error('Video must smaller than 15MB!');
     }
     const key = 'Upload';
     message.loading({ content: 'Uploading...', key });
     
     // return isJpgOrPng && isLt2M;
-    const resp = await imageFileUploader({
+    const resp = await videoFileUploader({
       file,
-      fileName: `${slug}-overview-video-thumbnail`, folder:`courses/${slug}/images`
+      fileName: `${slug}-overview-video`, folder:`courses/${slug}/videos`
     })
-    await setOverviewImageUrl(resp.secure_url)
-    await setOverviewImageFile(file)
+    await setOverviewVideoUrl(resp.secure_url)
+    await setOverviewVideoFile({
+      uid: '-1',
+      name: file.name,
+      status: 'done',
+      url: resp.secure_url,
+    })
     message.success({ content: 'Uploaded!', key, duration: 2 });
     return false;
   }, [slug]);
@@ -296,7 +316,7 @@ export function UpsertCourseBatchDetailsPage(params) {
             <Col span={8} className="basic-details-vertical-section">
               <Typography.Title level={5}>Videos & Overview</Typography.Title>
               <Alert
-                description="Overiew Image should be 350px X 350px, .png .jpg .jpeg Supported, Max size 2MB."
+                description="Detail Image should be 1920x1080 resolution, .png .jpg .jpeg Supported, Max size 2MB."
                 type="info"
               />
               <Form.Item name={"detailThumbnailUrl"} label="Detail Image">
@@ -316,23 +336,26 @@ export function UpsertCourseBatchDetailsPage(params) {
                 </Upload>
               </Form.Item>
               <Alert
-                description="Video Thumbnail should be 1920px X 1080px, .png .jpg .jpeg Supported, Max size 2MB."
+                description="Overview Video should be 720x480 resolution, filetype .mp4, Max size 15MB."
                 type="info"
               />
-              <Form.Item name={"overviewVideoThumbnailUrl"} label="Overview Image">
+              <Form.Item name={"overviewVideoThumbnailUrl"} label="Overview Video">
               <Upload
-                name="avatar"
-                listType="picture-card"
-                className="batch-img-uploader"
-                showUploadList={false}
+                name="course-overview-video"
+                // defaultFileList={[...fileList]}
+                // showUploadList={false}
                 beforeUpload={overviewVideoThumbUrlPreUploadhook}
                 onRemove={(_file) => {
-                  setOverviewImageUrl('')
-                  setOverviewImageFile(null)
+                  setOverviewVideoUrl('')
+                  setOverviewVideoFile(null)
                 }}
-                fileList={overviewImageFile ? [overviewImageFile] : []}
+                fileList={overviewVideoFile && overviewVideoFile.url ? [overviewVideoFile] : []}
               >
-                {overviewImageUrl ? <img src={overviewImageUrl} alt="avatar" style={{ width: '100%', height: '100%', maxHeight: '100%', maxWidth: '100%' }} /> : uploadButton}
+                {
+                  overviewVideoFile && overviewVideoFile.url ? null : (
+                    <Button icon={<UploadOutlined />}>Upload Overview Video</Button>
+                  )
+                }
               </Upload>
               </Form.Item>
             </Col>
